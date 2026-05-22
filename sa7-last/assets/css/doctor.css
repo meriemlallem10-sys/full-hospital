@@ -1,0 +1,99 @@
+/* ══════════════════════════════════════
+   DOCTOR STYLES
+   ══════════════════════════════════════ */
+
+.app-screen .sidebar .ni.active {
+  background: var(--accent);
+  color: #fff;
+}
+
+/* Doctor dashboard stats */
+.stat {
+  text-align: center;
+  padding: 20px;
+  background: var(--surface2);
+  border-radius: 12px;
+  border: 1.5px solid var(--border);
+}
+
+.stat-n {
+  font-family: 'DM Serif Display', serif;
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 4px;
+}
+
+.stat-l {
+  font-size: 13px;
+  color: var(--text2);
+  font-weight: 500;
+}
+
+/* Stats grid */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 16px;
+}
+
+/* List items */
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: var(--surface2);
+  border-radius: 10px;
+  border: 1.5px solid var(--border);
+}
+
+.row-d {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text2);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  min-width: 60px;
+}
+
+.row-i {
+  flex: 1;
+  margin: 0 12px;
+}
+
+.row-t {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 2px;
+}
+
+.row-s {
+  font-size: 12px;
+  color: var(--text3);
+}
+
+/* Profile rows */
+.prow {
+  display: flex;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.prl {
+  font-weight: 600;
+  color: var(--text2);
+  min-width: 120px;
+}
+
+.prv {
+  color: var(--text);
+  flex: 1;
+}

@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MediCare — Login</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+  <style>
+    /* LOGIN STYLES */
+    body { background: var(--bg); }
+    #login-screen {
+      display: flex;
+      min-height: 100vh;
+    }
+    .ll {
+      width: 42%;
+      background: var(--accent);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 48px;
+      position: relative;
+      overflow: hidden;
+    }
+    .ll::before {
+      content: '';
+      position: absolute;
+      top: -80px;
+      right: -80px;
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      background: rgba(127, 216, 247, .09);
+    }
+    .ll::after {
+      content: '';
+      position: absolute;
+      bottom: -60px;
+      left: -60px;
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      background: rgba(127, 216, 247, .06);
+    }
+    .brand {
+      font-family: 'DM Serif Display', serif;
+      font-size: 44px;
+      color: #fff;
+      letter-spacing: -1px;
+      margin-bottom: 6px;
+      position: relative;
+      z-index: 1;
+    }
+    .brand span { color: #7fd8f7; }
+    .tagline {
+      color: rgba(255, 255, 255, .6);
+      font-size: 13px;
+      text-align: center;
+      max-width: 260px;
+      line-height: 1.7;
+      position: relative;
+      z-index: 1;
+      margin-bottom: 36px;
+    }
+    .role-cards {
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+      width: 100%;
+      max-width: 280px;
+      position: relative;
+      z-index: 1;
+    }
+    .rc-label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: rgba(255, 255, 255, .4);
+      margin-bottom: 2px;
+    }
+    .rc {
+      background: rgba(255, 255, 255, .10);
+      border: 1.5px solid rgba(255, 255, 255, .18);
+      border-radius: 11px;
+      padding: 12px 16px;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      transition: all .18s;
+      user-select: none;
+    }
+    .rc:hover {
+      background: rgba(255, 255, 255, .18);
+      border-color: rgba(255, 255, 255, .35);
+      transform: translateX(3px);
+    }
+    .rc.sel {
+      background: rgba(127, 216, 247, .22);
+      border-color: #7fd8f7;
+      box-shadow: 0 0 0 3px rgba(127, 216, 247, .18);
+    }
+    .rc-name { font-size: 13.5px; font-weight: 600; }
+    .rc-sub { font-size: 11px; opacity: .55; margin-top: 1px; }
+    .lr {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px;
+    }
+    .lcard {
+      background: var(--surface);
+      border-radius: 20px;
+      padding: 44px 40px;
+      box-shadow: var(--shlg);
+      width: 100%;
+      max-width: 400px;
+      border: 1px solid var(--border);
+    }
+    .lcard h2 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 26px;
+      color: var(--accent);
+      margin-bottom: 6px;
+    }
+    .lcard p {
+      font-size: 13px;
+      color: var(--text3);
+      margin-bottom: 26px;
+    }
+    .sel-tag {
+      display: none;
+      align-items: center;
+      gap: 8px;
+      background: var(--accent-light);
+      color: var(--accent);
+      border-radius: 8px;
+      padding: 8px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 18px;
+    }
+    .sel-tag.vis { display: flex; }
+    .lf { margin-bottom: 16px; }
+    .lf label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text2);
+      margin-bottom: 5px;
+    }
+    .lf input {
+      width: 100%;
+      padding: 12px 15px;
+      border-radius: 10px;
+      border: 1.5px solid var(--border);
+      font-size: 14px;
+      font-family: inherit;
+      color: var(--text);
+      background: var(--bg);
+      outline: none;
+      transition: all .15s;
+    }
+    .lf input:focus {
+      border-color: var(--accent2);
+      box-shadow: 0 0 0 3px rgba(46, 134, 171, .12);
+      background: #fff;
+    }
+    .pw { position: relative; }
+    .pw input { padding-right: 44px; }
+    .pw-eye {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 12px;
+      color: var(--text3);
+      padding: 0;
+      font-family: inherit;
+    }
+    .lerr {
+      background: var(--danger-light);
+      color: var(--danger);
+      border: 1px solid #f5c6c2;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 13px;
+      margin-bottom: 14px;
+      display: none;
+    }
+    .lbtn {
+      width: 100%;
+      padding: 13px;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all .15s;
+    }
+    .lbtn:hover {
+      background: var(--accent2);
+      transform: translateY(-1px);
+    }
+  </style>
+</head>
+<body>
+  <div id="login-screen">
+    <div class="ll">
+      <div class="brand">Medi<span>Care</span></div>
+      <div class="tagline">Hospitalized Patients Management System</div>
+      <div class="role-cards">
+        <div class="rc-label">Select your role</div>
+        <div class="rc" id="rc-secretary" onclick="selRole('secretary')">
+          <div>
+            <div class="rc-name">Medical Secretary</div>
+            <div class="rc-sub">Patient registration &amp; scheduling</div>
+          </div>
+        </div>
+        <div class="rc" id="rc-doctor" onclick="selRole('doctor')">
+          <div>
+            <div class="rc-name">Doctor</div>
+            <div class="rc-sub">Consultations &amp; medical records</div>
+          </div>
+        </div>
+        <div class="rc" id="rc-nurse" onclick="selRole('nurse')">
+          <div>
+            <div class="rc-name">Nurse</div>
+            <div class="rc-sub">Patient care &amp; vital signs</div>
+          </div>
+        </div>
+        <div class="rc" id="rc-admin" onclick="selRole('admin')">
+          <div>
+            <div class="rc-name">Administrator</div>
+            <div class="rc-sub">Staff &amp; hospital statistics</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="lr">
+      <div class="lcard">
+        <h2>Welcome back</h2>
+        <p>Sign in to access the hospital management system.</p>
+        <div class="sel-tag" id="sel-tag"><span id="sel-name">Role not selected</span></div>
+        <div class="lerr" id="lerr"></div>
+        <form onsubmit="doLogin(event)" novalidate>
+          <div class="lf">
+            <label>Username</label>
+            <input type="text" id="lu" placeholder="Enter your username">
+          </div>
+          <div class="lf">
+            <label>Password</label>
+            <div class="pw">
+              <input type="password" id="lp" placeholder="Enter your password">
+              <button type="button" class="pw-eye" onclick="togglePw()">Show</button>
+            </div>
+          </div>
+          <button type="submit" class="lbtn">Sign In</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast-container"></div>
+
+  <script src="assets/js/common.js"></script>
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/login.js"></script>
+</body>
+</html>

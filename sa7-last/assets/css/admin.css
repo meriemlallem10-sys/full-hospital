@@ -1,0 +1,156 @@
+/* ══════════════════════════════════════
+   ADMIN STYLES
+   ══════════════════════════════════════ */
+
+.app-screen .sidebar .ni.active {
+  background: var(--accent);
+  color: #fff;
+}
+
+/* Admin dashboard stats */
+.stat {
+  text-align: center;
+  padding: 16px 14px;
+  background: var(--surface);
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  min-height: 120px;
+}
+
+.stat-n {
+  font-family: 'DM Serif Display', serif;
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 4px;
+}
+
+.stat-l {
+  font-size: 12px;
+  color: var(--text2);
+  font-weight: 600;
+}
+
+/* Stats grid */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 14px;
+}
+
+/* List items */
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 16px;
+  background: var(--surface);
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  margin-bottom: 8px;
+}
+
+.row-d {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--accent);
+  min-width: 90px;
+}
+
+.row-i {
+  flex: 1;
+}
+
+.row-t {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 2px;
+}
+
+.row-s {
+  font-size: 12px;
+  color: var(--text3);
+}
+
+/* Profile rows */
+.prow {
+  display: flex;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.prl {
+  font-weight: 600;
+  color: var(--text2);
+  min-width: 120px;
+}
+
+.prv {
+  color: var(--text);
+  flex: 1;
+}
+
+/* Modal styles for editing staff */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: var(--surface);
+  border-radius: 12px;
+  padding: 24px;
+  max-width: 500px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.modal-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: var(--text2);
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 20px;
+}

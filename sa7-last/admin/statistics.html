@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - MediCare</title>
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <link rel="stylesheet" href="../assets/css/admin.css">
+</head>
+<body>
+  <div class="app-screen active">
+    <header class="hdr">
+      <div class="hdr-logo">Medi<span>Care</span></div>
+      <div class="hdiv"></div>
+      <span class="hbadge">Administrator</span>
+      <div class="hsp"></div>
+      <div class="hright"><button class="lout" onclick="doLogout()">Logout</button></div>
+    </header>
+
+    <nav class="sidebar">
+      <div class="ns">Main</div>
+      <button class="ni active" onclick="goToAdmin('a-stats', this)">Statistics</button>
+      <div class="ns">Management</div>
+      <button class="ni" onclick="goToAdmin('a-staff', this)">Staff List</button>
+      <div class="ns">Account</div>
+      <button class="ni" onclick="goToAdmin('a-profile', this)">My Profile</button>
+    </nav>
+
+    <main class="main">
+      <div class="pg active" id="a-stats">
+        <div class="ptitle">Hospital Statistics</div>
+        <div class="psub">Overview of hospital activity.</div>
+        <div class="sg4" style="margin-bottom:16px;">
+          <div class="card" style="min-width:160px;max-width:220px;"><div class="sn" id="a-n-doc">0</div><div class="sl">Doctors</div></div>
+          <div class="card" style="min-width:160px;max-width:220px;"><div class="sn" id="a-n-nur">0</div><div class="sl">Nurses</div></div>
+          <div class="card" style="min-width:160px;max-width:220px;"><div class="sn" id="a-n-sec">0</div><div class="sl">Secretaries</div></div>
+          <div class="card" style="min-width:160px;max-width:220px;"><div class="sn" id="a-n-pat">0</div><div class="sl">Total Patients</div></div>
+        </div>
+        <div class="g2" style="margin-bottom:24px;">
+          <div class="card" style="min-width:160px;max-width:220px;"><div class="sn" id="a-n-adm">0</div><div class="sl">Currently Admitted</div></div>
+        </div>
+        <div class="card"><div class="sh"><div class="stit">Department Occupancy</div></div><div id="a-wing-stats"></div></div>
+      </div>
+
+      <div class="pg" id="a-staff">
+        <div class="ptitle">Staff List</div>
+        <div class="psub">Search, add and remove staff accounts.</div>
+        <div class="card">
+          <div class="sb"><div class="sw-srch"><input type="search" placeholder="Search by name or username…" oninput="renderStaff(this.value)"/></div><button class="btn btn-p" onclick="openCreateStaffModal()">Create Account</button></div>
+          <div class="tw"><table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Username</th>
+                <th>Role</th>
+                <th>Phone</th>
+                <th>Specialty / Department</th>
+                <th>Manage Account</th>
+              </tr>
+            </thead>
+            <tbody id="a-staff-body"></tbody>
+          </table></div>
+        </div>
+      </div>
+
+      <div class="pg" id="a-profile">
+        <div class="ptitle">My Profile</div>
+        <div class="ph" style="background:linear-gradient(135deg,#1a2332,#1a5f7a);">
+          <div>
+            <div style="font-size:13px;opacity:.8;background:rgba(255,255,255,.15);padding:4px 12px;border-radius:20px;display:inline-block;margin-bottom:6px;">Administrator</div>
+            <div style="font-family:'DM Serif Display',serif;font-size:22px;margin-bottom:4px;">System Administrator</div>
+            <div style="font-size:13px;opacity:.65;">Full system access</div>
+          </div>
+        </div>
+        <div class="pg2">
+          <div class="pc">
+            <div class="pct">Professional Details</div>
+            <div class="prow"><div class="prl">ID</div><div class="prv" id="admin-prof-id">—</div></div>
+            <div class="prow"><div class="prl">Role</div><div class="prv">Administrator</div></div>
+            <div class="prow"><div class="prl">Username</div><div class="prv" id="admin-prof-user">—</div></div>
+            <div class="prow"><div class="prl">Phone</div><div class="prv" id="admin-prof-phone">—</div></div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div id="toast-container"></div>
+
+  <script src="../assets/js/common.js"></script>
+  <script src="../assets/js/api.js"></script>
+  <script src="../assets/js/login.js"></script>
+  <script src="../assets/js/admin.js"></script>
+  <script>
+    (async function() {
+      if (!restoreSession()) throw new Error('Not authenticated');
+      if (curUser.role !== 'admin') window.location.href = '../index.html';
+
+      try {
+        await loadBackendData();
+      } catch (err) {
+        showToast('Unable to load data from backend.', 'err');
+      }
+
+      // Fill profile info
+      document.getElementById('admin-prof-id').textContent = curUser.id;
+      document.getElementById('admin-prof-user').textContent = curUser.user;
+      document.getElementById('admin-prof-phone').textContent = curUser.phone || '—';
+
+      renderAdminStats();
+    })();
+  </script>
+</body>
+</html>

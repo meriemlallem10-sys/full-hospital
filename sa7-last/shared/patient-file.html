@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Patient Medical File - MediCare</title>
+  <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+  <div class="app-screen active">
+    <header class="hdr">
+      <div class="hdr-logo">Medi<span>Care</span></div>
+      <div class="hdiv"></div>
+      <span class="hbadge" id="role-badge">Medical File</span>
+      <div class="hsp"></div>
+      <div class="hright"><button class="btn btn-s sm" onclick="goBack()">← Back</button></div>
+    </header>
+
+    <!-- Modal overlay: centered rectangle above the page, background stays visible -->
+    <div class="mo" id="file-mo" aria-hidden="true">
+      <div class="md">
+        <div class="mh">
+          <div class="mt" id="file-mo-title">Patient File</div>
+          <button class="mc" onclick="closeMo('file-mo')">×</button>
+        </div>
+        <div class="mb" id="file-mo-body">
+          <!-- Populated by patient-file.js -->
+        </div>
+      </div>
+    </div>
+
+    <main class="main">
+      <div class="pg active" id="patient-file-bg">
+        <div class="ptitle">Patient List</div>
+        <div class="psub">The current page remains visible behind the patient file modal.</div>
+        <div class="card" style="margin-top:22px;">
+          <div class="sh" style="justify-content:space-between;gap:16px;flex-wrap:wrap;">
+            <div class="stit">Recent Patients</div>
+            <button class="btn btn-o sm">View Full List</button>
+          </div>
+          <div class="tw" style="margin-top:18px;">
+            <table>
+              <thead>
+                <tr><th>Patient</th><th>ID</th><th>Status</th><th>Dept</th><th>Action</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>karim k</td><td>PT-001</td><td><span class="badge b-g">Admitted</span></td><td>Dept A</td><td><button class="btn btn-o sm">View File</button></td></tr>
+                <tr><td>Sara Ali</td><td>PT-002</td><td><span class="badge b-gr">Discharged</span></td><td>Dept B</td><td><button class="btn btn-o sm">View File</button></td></tr>
+                <tr><td>John Doe</td><td>PT-003</td><td><span class="badge b-b">Under Review</span></td><td>Dept C</td><td><button class="btn btn-o sm">View File</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div id="toast-container"></div>
+
+  <script src="../assets/js/common.js"></script>
+  <script src="../assets/js/login.js"></script>
+  <script src="../assets/js/patient-file.js"></script>
+</body>
+</html>

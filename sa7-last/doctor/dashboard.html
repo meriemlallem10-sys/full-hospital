@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Doctor Dashboard - MediCare</title>
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <link rel="stylesheet" href="../assets/css/doctor.css">
+</head>
+<body>
+  <div class="app-screen active">
+    <header class="hdr">
+      <div class="hdr-logo">Medi<span>Care</span></div>
+      <div class="hdiv"></div>
+      <span class="hbadge" id="doc-badge">Doctor</span>
+      <div class="hsp"></div>
+      <div class="hright"><button class="lout" onclick="doLogout()">Logout</button></div>
+    </header>
+
+    <nav class="sidebar">
+      <div class="ns">Main</div>
+      <button class="ni active" onclick="window.location.href='dashboard.html'">Dashboard</button>
+      <div class="ns">Appointments</div>
+      <button class="ni" onclick="window.location.href='appointments.html'">Appointments</button>
+      <div class="ns">Patients</div>
+      <button class="ni" onclick="window.location.href='patients.html'">Patient List</button>
+      <div class="ns">Account</div>
+      <button class="ni" onclick="window.location.href='profile.html'">My Profile</button>
+    </nav>
+
+    <main class="main">
+      <div class="pg active" id="d-dash">
+        <div class="ptitle" id="d-dash-title">Doctor Dashboard</div>
+        <div class="psub" id="d-dash-sub">Your department overview.</div>
+        <div class="card" style="max-width:320px;margin-bottom:20px;">
+          <div><div class="sn" id="d-n-pts">0</div><div class="sl">Department Patients</div></div>
+        </div>
+        <div class="card">
+          <div class="sh"><div class="stit">Upcoming Appointments</div><button class="btn btn-o sm" onclick="window.location.href='appointments.html'">View All</button></div>
+          <div id="d-dash-appts"><div style="text-align:center;padding:20px;color:var(--text3);font-size:13px;">No appointments yet.</div></div>
+        </div>
+      </div>
+
+      <div class="pg" id="d-patients">
+        <div class="ptitle">Patient List</div>
+        <div class="psub">Patients currently admitted in your department.</div>
+        <div class="search-bar">
+          <input type="text" placeholder="Search patients..." oninput="renderDocPts(this.value)">
+        </div>
+        <div class="tw"><table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Department</th>
+              <th>Bed</th>
+              <th>Admitted</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="d-ptbody"></tbody>
+        </table></div>
+      </div>
+
+      <div class="pg" id="d-appts">
+        <div class="ptitle">Appointments</div>
+        <div class="psub">Your scheduled appointments.</div>
+        <div class="search-bar">
+          <input type="text" placeholder="Search by patient name..." oninput="renderDocAppts(this.value)">
+        </div>
+        <table class="tbl">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Time</th>
+              <th>Patient</th>
+              <th>Type</th>
+              <th>Bed</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="d-appts-body"></tbody>
+        </table>
+      </div>
+
+      <div class="pg" id="d-profile">
+        <div class="ptitle">My Profile</div>
+        <div class="ph">
+          <div>
+            <div style="font-size:13px;opacity:.8;background:rgba(255,255,255,.15);padding:4px 12px;border-radius:20px;display:inline-block;margin-bottom:6px;">Doctor</div>
+            <div style="font-family:'DM Serif Display',serif;font-size:22px;margin-bottom:4px;">Dr. <span id="doc-prof-name">—</span></div>
+            <div style="font-size:14px;color:var(--text2);">Dept <span id="doc-prof-wing">—</span> — <span id="doc-prof-spec">—</span></div>
+          </div>
+        </div>
+        <div class="pg2">
+          <div class="pc">
+            <div class="pct">Professional Details</div>
+            <div class="prow"><div class="prl">ID</div><div class="prv" id="doc-prof-id">—</div></div>
+            <div class="prow"><div class="prl">Role</div><div class="prv">Doctor</div></div>
+            <div class="prow"><div class="prl">Username</div><div class="prv" id="doc-prof-user">—</div></div>
+            <div class="prow"><div class="prl">Phone</div><div class="prv" id="doc-prof-phone">—</div></div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div id="toast-container"></div>
+
+  <script src="../assets/js/common.js"></script>
+  <script src="../assets/js/api.js"></script>
+  <script src="../assets/js/login.js"></script>
+  <script src="../assets/js/doctor.js"></script>
+  <script>
+    (async function() {
+      if (!restoreSession()) throw new Error('Not authenticated');
+      if (curUser.role !== 'doctor') window.location.href = '../index.html';
+
+      try {
+        await loadBackendData();
+      } catch (err) {
+        showToast('Unable to load data from backend.', 'err');
+      }
+
+      document.getElementById('doc-badge').textContent = curUser.name;
+      document.getElementById('d-dash-title').textContent = curUser.name + ' — Dashboard';
+      document.getElementById('d-dash-sub').textContent = 'Your department overview.';
+
+      refreshDocDash();
+    })();
+  </script>
+</body>
+</html>

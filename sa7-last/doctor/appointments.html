@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Appointments - MediCare</title>
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <link rel="stylesheet" href="../assets/css/doctor.css">
+</head>
+<body>
+  <div class="app-screen active">
+    <header class="hdr">
+      <div class="hdr-logo">Medi<span>Care</span></div>
+      <div class="hdiv"></div>
+      <span class="hbadge" id="doc-badge">Doctor</span>
+      <div class="hsp"></div>
+      <div class="hright"><button class="lout" onclick="doLogout()">Logout</button></div>
+    </header>
+
+    <nav class="sidebar">
+      <div class="ns">Main</div>
+      <button class="ni" onclick="window.location.href='dashboard.html'">Dashboard</button>
+      <div class="ns">Appointments</div>
+      <button class="ni active" onclick="window.location.href='appointments.html'">Appointments</button>
+      <div class="ns">Patients</div>
+      <button class="ni" onclick="window.location.href='patients.html'">Patient List</button>
+      <div class="ns">Account</div>
+      <button class="ni" onclick="window.location.href='profile.html'">My Profile</button>
+    </nav>
+
+    <main class="main">
+      <div class="pg active" id="d-appts">
+        <div class="ptitle">Appointments</div>
+        <div class="psub">All appointments assigned to you.</div>
+        <div class="card">
+          <div class="sb"><div class="sw-srch"><input type="search" placeholder="Search by patient name…" oninput="renderDocAppts(this.value)"/></div></div>
+          <div class="tw"><table>
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Patient</th>
+                <th>Type</th>
+                <th>Bed</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="d-appts-body"></tbody>
+          </table></div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Patient File Modal -->
+  <div class="mo" id="doc-file-mo" aria-hidden="true" onclick="closeMoBg(event)">
+    <div class="md">
+      <div class="mh">
+        <div class="mt" id="doc-file-mo-title">Medical File</div>
+        <button class="mc" onclick="closeMo('doc-file-mo')">×</button>
+      </div>
+      <div class="mb" id="doc-file-mo-body"></div>
+    </div>
+  </div>
+
+  <div id="toast-container"></div>
+
+  <script src="../assets/js/common.js"></script>
+  <script src="../assets/js/api.js"></script>
+  <script src="../assets/js/login.js"></script>
+  <script src="../assets/js/doctor.js"></script>
+  <script>
+    (async function() {
+      if (!restoreSession()) throw new Error('Not authenticated');
+      if (curUser.role !== 'doctor') window.location.href = '../index.html';
+
+      try {
+        await loadBackendData();
+      } catch (err) {
+        showToast('Unable to load data from backend.', 'err');
+      }
+
+      document.getElementById('doc-badge').textContent = curUser.name;
+      renderDocAppts();
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Profile - MediCare</title>
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <link rel="stylesheet" href="../assets/css/doctor.css">
+</head>
+<body>
+  <div class="app-screen active">
+    <header class="hdr">
+      <div class="hdr-logo">Medi<span>Care</span></div>
+      <div class="hdiv"></div>
+      <span class="hbadge" id="doc-badge">Doctor</span>
+      <div class="hsp"></div>
+      <div class="hright"><button class="lout" onclick="doLogout()">Logout</button></div>
+    </header>
+
+    <nav class="sidebar">
+      <div class="ns">Main</div>
+      <button class="ni" onclick="window.location.href='dashboard.html'">Dashboard</button>
+      <div class="ns">Appointments</div>
+      <button class="ni" onclick="window.location.href='appointments.html'">Appointments</button>
+      <div class="ns">Patients</div>
+      <button class="ni" onclick="window.location.href='patients.html'">Patient List</button>
+      <div class="ns">Account</div>
+      <button class="ni active" onclick="window.location.href='profile.html'">My Profile</button>
+    </nav>
+
+    <main class="main">
+      <div class="pg active" id="d-profile">
+        <div class="ptitle">My Profile</div>
+        <div class="ph" style="background:linear-gradient(135deg,#1a5f7a,#1a7a4a);">
+          <div>
+            <div style="font-size:13px;opacity:.8;background:rgba(255,255,255,.15);padding:4px 12px;border-radius:20px;display:inline-block;margin-bottom:6px;">Doctor</div>
+            <div style="font-family:'DM Serif Display',serif;font-size:22px;margin-bottom:4px;">Dr. <span id="doc-prof-name">—</span></div>
+            <div style="font-size:13px;opacity:.65;" id="doc-prof-info">Department</div>
+          </div>
+        </div>
+        <div class="pg2">
+          <div class="pc">
+            <div class="pct">Professional Details</div>
+            <div class="prow"><div class="prl">ID</div><div class="prv" id="doc-prof-id">—</div></div>
+            <div class="prow"><div class="prl">Role</div><div class="prv">Doctor</div></div>
+            <div class="prow"><div class="prl">Username</div><div class="prv" id="doc-prof-user">—</div></div>
+            <div class="prow"><div class="prl">Phone</div><div class="prv" id="doc-prof-phone">—</div></div>
+            <div class="prow"><div class="prl">Specialty</div><div class="prv" id="doc-prof-spec">—</div></div>
+            <div class="prow"><div class="prl">Department</div><div class="prv" id="doc-prof-wing">—</div></div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div id="toast-container"></div>
+
+  <script src="../assets/js/common.js"></script>
+  <script src="../assets/js/login.js"></script>
+  <script src="../assets/js/doctor.js"></script>
+  <script>
+    if (!restoreSession()) throw new Error('Not authenticated');
+    if (curUser.role !== 'doctor') window.location.href = '../index.html';
+
+    const profileName = curUser.name.replace(/^Dr\.?\s*/i, '');
+    document.getElementById('doc-badge').textContent = curUser.name;
+    document.getElementById('doc-prof-name').textContent = profileName;
+    document.getElementById('doc-prof-info').textContent = `${curUser.dept || ''} — Dept ${curUser.wing}`;
+    document.getElementById('doc-prof-wing').textContent = `Dept ${curUser.wing} — ${curUser.dept || ''}`;
+    document.getElementById('doc-prof-spec').textContent = curUser.spec || (DEPTS[curUser.wing] ? DEPTS[curUser.wing].specialty : '');
+    document.getElementById('doc-prof-id').textContent = curUser.id;
+    document.getElementById('doc-prof-user').textContent = curUser.user;
+    document.getElementById('doc-prof-phone').textContent = curUser.phone || '—';
+
+
+  </script>
+</body>
+</html>

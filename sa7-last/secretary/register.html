@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register Patient - MediCare</title>
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <link rel="stylesheet" href="../assets/css/secretary.css">
+</head>
+<body>
+  <div class="app-screen active">
+    <header class="hdr">
+      <div class="hdr-logo">Medi<span>Care</span></div>
+      <div class="hdiv"></div>
+      <span class="hbadge">Medical Secretary</span>
+      <div class="hsp"></div>
+      <div class="hright"><button class="lout" onclick="doLogout()">Logout</button></div>
+    </header>
+
+    <nav class="sidebar">
+      <div class="ns">Main</div>
+      <button class="ni" onclick="location.href='dashboard.html'">Dashboard</button>
+      <div class="ns">Patients</div>
+      <button class="ni active" onclick="goToNav('s-register', this)">Register New Patient</button>
+      <button class="ni" onclick="location.href='patients.html'">Patient List</button>
+      <div class="ns">Scheduling</div>
+      <button class="ni" onclick="location.href='appointments.html'">Schedule Appointments</button>
+      <div class="ns">Beds</div>
+      <button class="ni" onclick="location.href='rooms.html'">Bed Occupancy</button>
+      <div class="ns">Account</div>
+      <button class="ni" onclick="location.href='profile.html'">My Profile</button>
+    </nav>
+
+    <main class="main">
+      <div class="pg active" id="s-register">
+        <div class="ptitle">Register Patient</div>
+        <div class="psub">New patient or re-admission of an existing patient.</div>
+
+        <div class="card" style="margin-bottom:16px;">
+          <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-size:14px;font-weight:600;color:var(--text);">
+            <input type="checkbox" id="rf-returning" onchange="toggleReturning()" style="width:18px;height:18px;cursor:pointer;accent-color:var(--accent);"/>
+            This is a returning patient (re-admission)
+          </label>
+        </div>
+
+        <!-- RE-ADMISSION SECTION -->
+        <div id="rf-returning-section" style="display:none;">
+          <div class="card" style="margin-bottom:16px;">
+            <div class="stit" style="margin-bottom:14px;">Select Existing Patient</div>
+            <input type="search" id="rf-ret-search" placeholder="Search discharged patients by name or ID..." oninput="renderRetPatList(this.value)" style="width:100%;margin-bottom:10px;"/>
+            <div id="rf-ret-list" style="border:1.5px solid var(--border);border-radius:8px;max-height:200px;overflow-y:auto;background:var(--surface);margin-bottom:14px;"></div>
+            <div id="rf-ret-selected" style="display:none;padding:10px 14px;border-radius:8px;background:var(--accent-light);color:var(--accent);font-weight:600;font-size:13.5px;margin-bottom:14px;"></div>
+            <input type="hidden" id="rf-ret-id"/>
+          </div>
+          <div class="card" id="rf-readmit-form" style="display:none;">
+            <div class="stit" style="margin-bottom:14px;">New Admission</div>
+            <div class="fg">
+              <div class="fgr">
+                <label>Department *</label>
+                <select id="rf-ret-dept" onchange="loadBeds('rf-ret-dept','rf-ret-bed')">
+                  <option value="">— Select Department —</option>
+                  <option value="A">Dept A — General Medicine</option>
+                  <option value="B">Dept B — Cardiology</option>
+                  <option value="C">Dept C — Pediatrics</option>
+                  <option value="D">Dept D — Orthopedics</option>
+                  <option value="E">Dept E — Neurology</option>
+                  <option value="F">Dept F — Maternity</option>
+                </select>
+              </div>
+              <div class="fgr">
+                <label>Bed *</label>
+                <select id="rf-ret-bed"><option value="">— Select department first —</option></select>
+              </div>
+              <div class="fgr">
+                <label>Admission Date *</label>
+                <input type="text" id="rf-ret-date" placeholder="DD/MM/YYYY" maxlength="10" oninput="fmtDate(this)"/>
+              </div>
+            </div>
+            <div class="fa">
+              <button type="button" class="btn btn-o" onclick="clearReg()">Clear</button>
+              <button type="button" class="btn btn-p" onclick="submitReadmit()">Re-admit Patient</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- NEW PATIENT SECTION -->
+        <div id="rf-new-section">
+          <div class="card">
+            <form onsubmit="submitReg(event)" novalidate>
+              <div class="fg">
+                <div class="fgr full"><span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text3);">Personal Information</span></div>
+                <div class="fgr"><label>First Name *</label><input id="rf1" placeholder="e.g. Karim"/></div>
+                <div class="fgr"><label>Last Name *</label><input id="rf2" placeholder="e.g. Messaoudi"/></div>
+                <div class="fgr"><label>Date of Birth *</label><input type="text" id="rf3" placeholder="DD/MM/YYYY" maxlength="10" oninput="fmtDate(this)"/></div>
+                <div class="fgr"><label>Gender *</label><select id="rf4"><option value="">— Select —</option><option>Male</option><option>Female</option></select></div>
+                <div class="fgr"><label>Blood Type *</label><select id="rf5"><option value="">— Select —</option><option>A+</option><option>A-</option><option>B+</option><option>B-</option><option>AB+</option><option>AB-</option><option>O+</option><option>O-</option></select></div>
+                <div class="fgr"><label>Phone *</label><input type="tel" id="rf6" placeholder="e.g. 0551 234 567"/></div>
+                <div class="fgr full"><label>Home Address *</label><input id="rf7" placeholder="Street, City, Province"/></div>
+                <div class="fgr"><label>Known Allergies</label><input id="rf8" placeholder="e.g. Penicillin, None"/></div>
+                <div class="fgr"><label>Pre-existing Conditions</label><input id="rf9" placeholder="e.g. Diabetes"/></div>
+                <div class="form-sep">Assign Bed</div>
+                <div class="fgr"><label>Department *</label>
+                  <select id="rf-dept" onchange="loadBeds('rf-dept','rf-bed')">
+                    <option value="">— Select Department —</option>
+                    <option value="A">Dept A — General Medicine</option>
+                    <option value="B">Dept B — Cardiology</option>
+                    <option value="C">Dept C — Pediatrics</option>
+                    <option value="D">Dept D — Orthopedics</option>
+                    <option value="E">Dept E — Neurology</option>
+                    <option value="F">Dept F — Maternity</option>
+                  </select>
+                </div>
+                <div class="fgr"><label>Bed *</label><select id="rf-bed"><option value="">— Select department first —</option></select></div>
+                <div class="fgr"><label>Admission Date *</label><input type="text" id="rf-date" placeholder="DD/MM/YYYY" maxlength="10" oninput="fmtDate(this)"/></div>
+              </div>
+              <div class="fa">
+                <button type="button" class="btn btn-o" onclick="clearReg()">Clear</button>
+                <button type="submit" class="btn btn-p">Register Patient</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div id="toast-container"></div>
+
+  <script src="../assets/js/common.js"></script>
+  <script src="../assets/js/api.js"></script>
+  <script src="../assets/js/login.js"></script>
+  <script src="../assets/js/secretary.js"></script>
+  <script>
+    (async function() {
+      if (!restoreSession()) throw new Error('Not authenticated');
+      if (curUser.role !== 'secretary') window.location.href = '../index.html';
+      try {
+        await loadBackendData();
+      } catch (err) {
+        showToast('Failed to load data from server.', 'err', 8000);
+      }
+    })();
+  </script>
+</body>
+</html>

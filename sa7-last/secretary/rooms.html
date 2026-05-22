@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bed Occupancy - MediCare</title>
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <link rel="stylesheet" href="../assets/css/secretary.css">
+</head>
+<body>
+  <div class="app-screen active">
+    <header class="hdr">
+      <div class="hdr-logo">Medi<span>Care</span></div>
+      <div class="hdiv"></div>
+      <span class="hbadge">Medical Secretary</span>
+      <div class="hsp"></div>
+      <div class="hright"><button class="lout" onclick="doLogout()">Logout</button></div>
+    </header>
+
+    <nav class="sidebar">
+      <div class="ns">Main</div>
+      <button class="ni" onclick="location.href='dashboard.html'">Dashboard</button>
+      <div class="ns">Patients</div>
+      <button class="ni" onclick="location.href='register.html'">Register New Patient</button>
+      <button class="ni" onclick="location.href='patients.html'">Patient List</button>
+      <div class="ns">Scheduling</div>
+      <button class="ni" onclick="location.href='appointments.html'">Schedule Appointments</button>
+      <div class="ns">Beds</div>
+      <button class="ni active" onclick="goToNav('s-beds', this)">Bed Occupancy</button>
+      <div class="ns">Account</div>
+      <button class="ni" onclick="location.href='profile.html'">My Profile</button>
+    </nav>
+
+    <main class="main">
+      <div class="pg active" id="s-beds">
+        <div class="ptitle">Bed Occupancy</div>
+        <div class="psub">Current bed status by department.</div>
+        <div class="tab-bar">
+          <div class="tab active" onclick="switchDept(this,'bd-a')">Dept A — General</div>
+          <div class="tab" onclick="switchDept(this,'bd-b')">Dept B — Cardiology</div>
+          <div class="tab" onclick="switchDept(this,'bd-c')">Dept C — Pediatrics</div>
+          <div class="tab" onclick="switchDept(this,'bd-d')">Dept D — Orthopedics</div>
+          <div class="tab" onclick="switchDept(this,'bd-e')">Dept E — Neurology</div>
+          <div class="tab" onclick="switchDept(this,'bd-f')">Dept F — Maternity</div>
+        </div>
+        <div id="bd-a"></div>
+        <div id="bd-b" style="display:none;"></div>
+        <div id="bd-c" style="display:none;"></div>
+        <div id="bd-d" style="display:none;"></div>
+        <div id="bd-e" style="display:none;"></div>
+        <div id="bd-f" style="display:none;"></div>
+      </div>
+    </main>
+  </div>
+
+  <div id="toast-container"></div>
+
+  <script src="../assets/js/common.js"></script>
+  <script src="../assets/js/login.js"></script>
+  <script src="../assets/js/secretary.js"></script>
+  <script>
+    if (!restoreSession()) throw new Error('Not authenticated');
+    if (curUser.role !== 'secretary') window.location.href = '../index.html';
+
+    function renderBeds() {
+      Object.keys(DEPTS).forEach(dk => {
+        const div = document.getElementById('bd-' + dk.toLowerCase());
+        if (!div) return;
+        const occupiedNums = patients.filter(p => p.dept === dk && p.status === 'Admitted').map(p => p.bedNum);
+        let html = '<div class="rg">';
+        for (let i = 1; i <= DEPTS[dk].beds; i++) {
+          const isFull = occupiedNums.includes(i);
+          html += `<div class="rcd ${isFull ? 'full' : 'free'}">
+            <div class="rnum">Bed ${i}</div>
+            <div style="font-size:12px;font-weight:600;color:var(--text2);">${isFull ? 'Occupied' : 'Available'}</div>
+          </div>`;
+        }
+        div.innerHTML = html + '</div>';
+      });
+    }
+
+    function switchDept(el, id) {
+      document.querySelectorAll('.tab-bar .tab').forEach(t => t.classList.remove('active'));
+      el.classList.add('active');
+      ['bd-a','bd-b','bd-c','bd-d','bd-e','bd-f'].forEach(w => {
+        const e = document.getElementById(w);
+        if (e) e.style.display = 'none';
+      });
+      const target = document.getElementById(id);
+      if (target) target.style.display = 'block';
+    }
+
+    renderBeds();
+  </script>
+</body>
+</html>

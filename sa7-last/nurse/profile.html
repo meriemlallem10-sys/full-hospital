@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Profile - MediCare</title>
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <link rel="stylesheet" href="../assets/css/nurse.css">
+</head>
+<body>
+  <div class="app-screen active">
+    <header class="hdr">
+      <div class="hdr-logo">Medi<span>Care</span></div>
+      <div class="hdiv"></div>
+      <span class="hbadge" id="nur-badge">Nurse</span>
+      <div class="hsp"></div>
+      <div class="hright"><button class="lout" onclick="doLogout()">Logout</button></div>
+    </header>
+
+    <nav class="sidebar">
+      <div class="ns">Main</div>
+      <button class="ni" onclick="window.location.href='dashboard.html'">Dashboard</button>
+      <div class="ns">Patients</div>
+      <button class="ni" onclick="window.location.href='patients.html'">Patient List</button>
+      <div class="ns">Account</div>
+      <button class="ni active" onclick="window.location.href='profile.html'">My Profile</button>
+    </nav>
+
+    <main class="main">
+      <div class="pg active" id="n-profile">
+        <div class="ptitle">My Profile</div>
+        <div class="ph" style="background:linear-gradient(135deg,#1a7a4a,#2e86ab);">
+          <div>
+            <div style="font-size:13px;opacity:.8;background:rgba(255,255,255,.15);padding:4px 12px;border-radius:20px;display:inline-block;margin-bottom:6px;">Nurse</div>
+            <div style="font-family:'DM Serif Display',serif;font-size:22px;margin-bottom:4px;" id="n-prof-name">Nurse</div>
+            <div style="font-size:13px;opacity:.65;" id="n-prof-sub">Dept —</div>
+          </div>
+        </div>
+        <div class="pg2">
+          <div class="pc">
+            <div class="pct">Professional Details</div>
+            <div class="prow"><div class="prl">ID</div><div class="prv" id="nurse-prof-id">—</div></div>
+            <div class="prow"><div class="prl">Role</div><div class="prv">Nurse</div></div>
+            <div class="prow"><div class="prl">Username</div><div class="prv" id="nurse-prof-user">—</div></div>
+            <div class="prow"><div class="prl">Phone</div><div class="prv" id="nurse-prof-phone">—</div></div>
+            <div class="prow"><div class="prl">Department</div><div class="prv" id="nurse-prof-dept">—</div></div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div id="toast-container"></div>
+
+  <script src="../assets/js/common.js"></script>
+  <script src="../assets/js/login.js"></script>
+  <script src="../assets/js/nurse.js"></script>
+  <script>
+    if (!restoreSession()) throw new Error('Not authenticated');
+    if (curUser.role !== 'nurse') window.location.href = '../index.html';
+
+    document.getElementById('nur-badge').textContent = curUser.name;
+    // Fill profile info
+    document.getElementById('n-prof-name').textContent = curUser.name;
+    document.getElementById('n-prof-sub').textContent = 'Dept ' + curUser.wing + ' — ' + (DEPTS[curUser.wing] ? DEPTS[curUser.wing].dept : '');
+    document.getElementById('nurse-prof-id').textContent = curUser.id;
+    document.getElementById('nurse-prof-dept').textContent = 'Dept ' + curUser.wing + ' — ' + (DEPTS[curUser.wing] ? DEPTS[curUser.wing].dept : '');
+    document.getElementById('nurse-prof-user').textContent = curUser.user;
+    document.getElementById('nurse-prof-phone').textContent = curUser.phone || '—';
+
+
+  </script>
+</body>
+</html>

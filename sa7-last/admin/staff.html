@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Staff List - MediCare</title>
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <link rel="stylesheet" href="../assets/css/admin.css">
+</head>
+<body>
+  <div class="app-screen active">
+    <header class="hdr">
+      <div class="hdr-logo">Medi<span>Care</span></div>
+      <div class="hdiv"></div>
+      <span class="hbadge">Administrator</span>
+      <div class="hsp"></div>
+      <div class="hright"><button class="lout" onclick="doLogout()">Logout</button></div>
+    </header>
+
+    <nav class="sidebar">
+      <div class="ns">Main</div>
+      <button class="ni" onclick="goToAdmin('a-stats', this)">Statistics</button>
+      <div class="ns">Management</div>
+      <button class="ni active" onclick="goToAdmin('a-staff', this)">Staff List</button>
+      <div class="ns">Account</div>
+      <button class="ni" onclick="goToAdmin('a-profile', this)">My Profile</button>
+    </nav>
+
+    <main class="main">
+      <div class="pg active" id="a-staff">
+        <div class="ptitle">Staff List</div>
+        <div class="psub">Search, add and remove staff accounts.</div>
+        <div class="card">
+          <div class="sb"><div class="sw-srch"><input type="search" placeholder="Search by name or username…" oninput="renderStaff(this.value)"/></div><button class="btn btn-p" onclick="openCreateStaffModal()">Create Account</button></div>
+          <div class="tw"><table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Username</th>
+                <th>Role</th>
+                <th>Phone</th>
+                <th>Specialty / Department</th>
+                <th>Manage Account</th>
+              </tr>
+            </thead>
+            <tbody id="a-staff-body"></tbody>
+          </table></div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div id="toast-container"></div>
+
+  <script src="../assets/js/common.js"></script>
+  <script src="../assets/js/api.js"></script>
+  <script src="../assets/js/login.js"></script>
+  <script src="../assets/js/admin.js"></script>
+  <script>
+    (async function() {
+      if (!restoreSession()) throw new Error('Not authenticated');
+      if (curUser.role !== 'admin') window.location.href = '../index.html';
+
+      try {
+        await loadBackendData();
+      } catch (err) {
+        showToast('Unable to load data from backend.', 'err');
+      }
+
+      renderAdminStaff();
+    })();
+  </script>
+</body>
+</html>

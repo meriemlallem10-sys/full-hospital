@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Appointments - MediCare</title>
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <link rel="stylesheet" href="../assets/css/secretary.css">
+</head>
+<body>
+  <div class="app-screen active">
+    <header class="hdr">
+      <div class="hdr-logo">Medi<span>Care</span></div>
+      <div class="hdiv"></div>
+      <span class="hbadge">Medical Secretary</span>
+      <div class="hsp"></div>
+      <div class="hright"><button class="lout" onclick="doLogout()">Logout</button></div>
+    </header>
+
+    <nav class="sidebar">
+      <div class="ns">Main</div>
+      <button class="ni" onclick="location.href='dashboard.html'">Dashboard</button>
+      <div class="ns">Patients</div>
+      <button class="ni" onclick="location.href='register.html'">Register New Patient</button>
+      <button class="ni" onclick="location.href='patients.html'">Patient List</button>
+      <div class="ns">Scheduling</div>
+      <button class="ni active" onclick="location.href='appointments.html'">Schedule Appointments</button>
+      <div class="ns">Beds</div>
+      <button class="ni" onclick="location.href='rooms.html'">Bed Occupancy</button>
+      <div class="ns">Account</div>
+      <button class="ni" onclick="location.href='profile.html'">My Profile</button>
+    </nav>
+
+    <main class="main">
+      <div class="pg active" id="s-appointments">
+        <div class="ptitle">Schedule Appointments</div>
+        <div class="psub">Schedule appointments and assign a doctor to a patient.</div>
+        <div class="g2">
+          <div class="card">
+            <div class="stit" style="margin-bottom:16px;">New Appointment</div>
+            <form onsubmit="return scheduleAppt(event)" novalidate>
+              <div style="display:flex;flex-direction:column;gap:13px;">
+                <div class="fgr">
+                  <label>Patient *</label>
+                  <div id="appt-pat-selected" style="display:none;padding:9px 13px;border-radius:8px;background:var(--accent-light);color:var(--accent);font-size:13.5px;font-weight:600;border:1.5px solid var(--accent2);margin-bottom:6px;align-items:center;justify-content:space-between;">
+                    <span id="appt-selected-name">—</span>
+                    <button type="button" onclick="clearPatSel()" style="background:none;border:none;cursor:pointer;color:var(--accent);font-size:12px;font-weight:600;">Change</button>
+                  </div>
+                  <input type="hidden" id="appt-pat"/>
+                  <div id="appt-pat-picker">
+                    <input type="search" id="appt-pat-search" placeholder="Search patient by name or ID…" oninput="renderApptPatList(this.value)" style="width:100%;margin-bottom:6px;"/>
+                    <div id="appt-pat-list" style="border:1.5px solid var(--border);border-radius:8px;max-height:200px;overflow-y:auto;background:var(--surface);"></div>
+                  </div>
+                </div>
+                <div class="fgr"><label>Assign Doctor *</label><select id="appt-doc"><option value="">— Select Doctor —</option></select></div>
+                <div class="fgr"><label>Date *</label><input type="date" id="appt-date"/></div>
+                <div class="fg" style="gap:12px;">
+                  <div class="fgr"><label>From (hour)</label><select id="appt-from"></select></div>
+                  <div class="fgr"><label>To (hour)</label><select id="appt-to"></select></div>
+                </div>
+                <div class="fgr"><label>Type</label><select id="appt-type"><option>Consultation</option><option>Follow-up</option><option>Intervention / Surgery</option></select></div>
+                <button type="submit" class="btn btn-p" onclick="scheduleAppt(event)">Schedule Appointment</button>
+              </div>
+            </form>
+          </div>
+          <div class="card">
+            <div class="sh"><div class="stit" id="sched-title">Appointments</div><span id="sched-badge"></span></div>
+            <div id="sched-panel"><div style="text-align:center;padding:24px;color:var(--text3);font-size:13px;">Select a date to view appointments.</div></div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div id="toast-container"></div>
+
+  <script src="../assets/js/common.js"></script>
+  <script src="../assets/js/api.js"></script>
+  <script src="../assets/js/login.js"></script>
+  <script src="../assets/js/secretary.js?v=2"></script>
+  <script>
+    async function initSecretaryAppointments() {
+      if (!restoreSession()) throw new Error('Not authenticated');
+      if (curUser.role !== 'secretary') window.location.href = '../index.html';
+      try {
+        await loadBackendData();
+      } catch (err) {
+        showToast('Failed to load data from server.', 'err', 8000);
+      }
+
+      const docSel = document.getElementById('appt-doc');
+      docSel.innerHTML = '<option value="">— Select Doctor —</option>' +
+        staff.filter(s => s.role === 'doctor').map(s =>
+          `<option value="${s.user}">${s.name} — Dept ${s.wing}</option>`
+        ).join('');
+
+      const hourOptions = [];
+      for (let h = 0; h < 24; h++) {
+        const v = (h < 10 ? '0' : '') + h + ':00';
+        hourOptions.push(`<option value="${v}">${v}</option>`);
+      }
+      document.getElementById('appt-from').innerHTML = hourOptions.join('');
+      document.getElementById('appt-to').innerHTML = hourOptions.join('');
+      renderApptPatList('');
+
+      document.getElementById('appt-date').addEventListener('change', updSched);
+    }
+
+    initSecretaryAppointments();
+  </script>
+</body>
+</html>

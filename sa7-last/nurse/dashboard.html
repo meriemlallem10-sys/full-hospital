@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nurse Dashboard - MediCare</title>
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <link rel="stylesheet" href="../assets/css/nurse.css">
+</head>
+<body>
+  <div class="app-screen active">
+    <header class="hdr">
+      <div class="hdr-logo">Medi<span>Care</span></div>
+      <div class="hdiv"></div>
+      <span class="hbadge" id="nur-badge">Nurse</span>
+      <div class="hsp"></div>
+      <div class="hright"><button class="lout" onclick="doLogout()">Logout</button></div>
+    </header>
+
+    <nav class="sidebar">
+      <div class="ns">Main</div>
+      <button class="ni active" onclick="window.location.href='dashboard.html'">Dashboard</button>
+      <div class="ns">Patients</div>
+      <button class="ni" onclick="window.location.href='patients.html'">Patient List</button>
+      <div class="ns">Account</div>
+      <button class="ni" onclick="window.location.href='profile.html'">My Profile</button>
+    </nav>
+
+    <main class="main">
+      <!-- DASHBOARD -->
+      <div class="pg active" id="n-dash">
+        <div class="ptitle" id="n-dash-title">Nurse Dashboard</div>
+        <div class="psub" id="n-dash-sub">Your department overview.</div>
+        <div class="card" style="max-width:320px;margin-bottom:20px;">
+          <div><div class="sn" id="n-n-pts">0</div><div class="sl">Patients in My Department</div></div>
+        </div>
+        <div class="card">
+          <div class="sh">
+            <div class="stit">Recent Patients</div>
+            <button class="btn btn-o sm" onclick="window.location.href='patients.html'">View All</button>
+          </div>
+          <div id="n-dash-pts">
+            <div style="text-align:center;padding:20px;color:var(--text3);font-size:13px;">No patients in your department yet.</div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- PATIENT FILE MODAL -->
+  <div class="mo" id="file-mo" onclick="closeMoBg(event)">
+    <div class="md">
+      <div class="mh"><div class="mt" id="file-mo-title">Patient File</div><button class="mc" onclick="closeMo('file-mo')">✕</button></div>
+      <div class="mb" id="file-mo-body"></div>
+    </div>
+  </div>
+
+  <div id="toast-container"></div>
+
+  <script src="../assets/js/common.js"></script>
+  <script src="../assets/js/api.js"></script>
+  <script src="../assets/js/login.js"></script>
+  <script src="../assets/js/nurse.js"></script>
+  <script>
+    (async function() {
+      if (!restoreSession()) throw new Error('Not authenticated');
+      if (curUser.role !== 'nurse') window.location.href = '../index.html';
+
+      try {
+        await loadBackendData();
+      } catch (err) {
+        showToast('Unable to load data from backend.', 'err');
+      }
+
+      document.getElementById('nur-badge').textContent  = curUser.name;
+      document.getElementById('n-dash-title').textContent= curUser.name + ' — Dashboard';
+      document.getElementById('n-dash-sub').textContent  = 'Dept ' + curUser.wing;
+
+      refreshNurseDash();
+    })();
+  </script>
+</body>
+</html>

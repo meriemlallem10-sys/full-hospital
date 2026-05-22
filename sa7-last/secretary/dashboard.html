@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Secretary Dashboard - MediCare</title>
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <link rel="stylesheet" href="../assets/css/secretary.css">
+</head>
+<body>
+  <div class="app-screen active">
+    <header class="hdr">
+      <div class="hdr-logo">Medi<span>Care</span></div>
+      <div class="hdiv"></div>
+      <span class="hbadge">Medical Secretary</span>
+      <div class="hsp"></div>
+      <div class="hright"><button class="lout" onclick="doLogout()">Logout</button></div>
+    </header>
+
+    <nav class="sidebar">
+      <div class="ns">Main</div>
+      <button class="ni active" onclick="goToNav('s-dash', this)">Dashboard</button>
+      <div class="ns">Patients</div>
+      <button class="ni" onclick="location.href='register.html'">Register New Patient</button>
+      <button class="ni" onclick="location.href='patients.html'">Patient List</button>
+      <div class="ns">Scheduling</div>
+      <button class="ni" onclick="location.href='appointments.html'">Schedule Appointments</button>
+      <div class="ns">Beds</div>
+      <button class="ni" onclick="location.href='rooms.html'">Bed Occupancy</button>
+      <div class="ns">Account</div>
+      <button class="ni" onclick="location.href='profile.html'">My Profile</button>
+    </nav>
+
+    <main class="main">
+      <div class="pg active" id="s-dash">
+        <div class="ptitle">Dashboard</div>
+        <div class="psub">Hospital overview.</div>
+        <div class="g2" style="margin-bottom:24px;">
+          <div class="card" style="flex:1;min-width:220px;">
+            <div class="sn" id="s-n-total">0</div>
+            <div class="sl">Total Patients</div>
+          </div>
+          <div class="card" style="flex:1;min-width:220px;">
+            <div class="sn" id="s-n-adm">0</div>
+            <div class="sl">Admitted</div>
+          </div>
+        </div>
+        <div class="g2">
+          <div class="card">
+            <div class="sh">
+              <div class="stit">Recent Patients</div>
+              <button class="btn btn-o sm" onclick="location.href='patients.html'">View All</button>
+            </div>
+            <div id="s-dash-pts"></div>
+          </div>
+          <div class="card">
+            <div class="sh">
+              <div class="stit">Bed Occupancy</div>
+              <button class="btn btn-o sm" onclick="location.href='rooms.html'">View Beds</button>
+            </div>
+            <div id="s-dash-rooms"></div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div id="toast-container"></div>
+
+  <script src="../assets/js/common.js"></script>
+  <script src="../assets/js/api.js"></script>
+  <script src="../assets/js/login.js"></script>
+  <script src="../assets/js/secretary.js"></script>
+  <script>
+    (async function() {
+      if (!restoreSession()) throw new Error('Not authenticated');
+      if (curUser.role !== 'secretary') window.location.href = '../index.html';
+      try {
+        await loadBackendData();
+      } catch (err) {
+        showToast('Failed to load data from server.', 'err', 8000);
+      }
+      refreshSecDash();
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,1820 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>MediCare — Hospital Management</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#f0f4f8;--surface:#fff;--surface2:#e8edf3;
+  --accent:#1a5f7a;--accent2:#2e86ab;--accent-light:#d4eaf4;
+  --danger:#c0392b;--danger-light:#fdecea;
+  --success:#1a7a4a;--success-light:#d4f0e2;
+  --warning:#d4801a;--warning-light:#fef3e2;
+  --purple:#6a1b9a;--purple-light:#ede7f6;
+  --text:#1a2332;--text2:#4a5568;--text3:#8a99ab;
+  --border:#d8e2ec;--sw:240px;--hh:64px;
+  --radius:12px;--sh:0 2px 12px rgba(26,95,122,.10);--shlg:0 8px 32px rgba(26,95,122,.18);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+
+/* LOGIN */
+#login-screen{display:flex;min-height:100vh;}
+.ll{width:42%;background:var(--accent);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 48px;position:relative;overflow:hidden;}
+.ll::before{content:'';position:absolute;top:-80px;right:-80px;width:300px;height:300px;border-radius:50%;background:rgba(127,216,247,.09);}
+.ll::after{content:'';position:absolute;bottom:-60px;left:-60px;width:220px;height:220px;border-radius:50%;background:rgba(127,216,247,.06);}
+.brand{font-family:'DM Serif Display',serif;font-size:44px;color:#fff;letter-spacing:-1px;margin-bottom:6px;position:relative;z-index:1;}
+.brand span{color:#7fd8f7;}
+.tagline{color:rgba(255,255,255,.6);font-size:13px;text-align:center;max-width:260px;line-height:1.7;position:relative;z-index:1;margin-bottom:36px;}
+.role-cards{display:flex;flex-direction:column;gap:9px;width:100%;max-width:280px;position:relative;z-index:1;}
+.rc-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,.4);margin-bottom:2px;}
+.rc{background:rgba(255,255,255,.10);border:1.5px solid rgba(255,255,255,.18);border-radius:11px;padding:12px 16px;color:#fff;display:flex;align-items:center;gap:12px;cursor:pointer;transition:all .18s;user-select:none;}
+.rc:hover{background:rgba(255,255,255,.18);border-color:rgba(255,255,255,.35);transform:translateX(3px);}
+.rc.sel{background:rgba(127,216,247,.22);border-color:#7fd8f7;box-shadow:0 0 0 3px rgba(127,216,247,.18);}
+.rc-name{font-size:13.5px;font-weight:600;}
+.rc-sub{font-size:11px;opacity:.55;margin-top:1px;}
+.lr{flex:1;display:flex;align-items:center;justify-content:center;padding:40px;}
+.lcard{background:var(--surface);border-radius:20px;padding:44px 40px;box-shadow:var(--shlg);width:100%;max-width:400px;border:1px solid var(--border);}
+.lcard h2{font-family:'DM Serif Display',serif;font-size:26px;color:var(--accent);margin-bottom:6px;}
+.lcard p{font-size:13px;color:var(--text3);margin-bottom:26px;}
+.sel-tag{display:none;align-items:center;gap:8px;background:var(--accent-light);color:var(--accent);border-radius:8px;padding:8px 14px;font-size:13px;font-weight:600;margin-bottom:18px;}
+.sel-tag.vis{display:flex;}
+.lf{margin-bottom:16px;}
+.lf label{display:block;font-size:12px;font-weight:600;color:var(--text2);margin-bottom:5px;}
+.lf input{width:100%;padding:12px 15px;border-radius:10px;border:1.5px solid var(--border);font-size:14px;font-family:inherit;color:var(--text);background:var(--bg);outline:none;transition:all .15s;}
+.lf input:focus{border-color:var(--accent2);box-shadow:0 0 0 3px rgba(46,134,171,.12);background:#fff;}
+.pw{position:relative;}.pw input{padding-right:44px;}
+.pw-eye{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:12px;color:var(--text3);padding:0;font-family:inherit;}
+.lerr{background:var(--danger-light);color:var(--danger);border:1px solid #f5c6c2;border-radius:8px;padding:10px 14px;font-size:13px;margin-bottom:14px;display:none;}
+.lbtn{width:100%;padding:13px;background:var(--accent);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s;}
+.lbtn:hover{background:var(--accent2);transform:translateY(-1px);}
+
+/* APP SHELL */
+.app-screen{display:none;}
+.hdr{position:fixed;top:0;left:0;right:0;height:var(--hh);background:var(--accent);color:#fff;display:flex;align-items:center;padding:0 24px;gap:16px;z-index:100;box-shadow:0 2px 16px rgba(26,95,122,.25);}
+.hdr-logo{font-family:'DM Serif Display',serif;font-size:22px;letter-spacing:-.5px;}
+.hdr-logo span{color:#7fd8f7;}
+.hdiv{width:1px;height:28px;background:rgba(255,255,255,.25);margin:0 8px;}
+.hbadge{font-size:13px;font-weight:500;opacity:.85;background:rgba(255,255,255,.15);padding:4px 12px;border-radius:20px;}
+.hsp{flex:1;}
+.hright{display:flex;align-items:center;gap:8px;}
+.lout{display:flex;align-items:center;gap:6px;padding:7px 14px;border-radius:8px;border:1.5px solid rgba(255,255,255,.35);background:transparent;color:#fff;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s;}
+.lout:hover{background:rgba(255,255,255,.15);}
+.sidebar{position:fixed;left:0;top:var(--hh);bottom:0;width:var(--sw);background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;gap:4px;padding:20px 12px;overflow-y:auto;z-index:90;}
+.ns{font-size:10px;font-weight:600;color:var(--text3);letter-spacing:1px;text-transform:uppercase;padding:12px 8px 4px;}
+.ni{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;cursor:pointer;font-size:13.5px;font-weight:500;color:var(--text2);transition:all .15s;border:none;background:none;width:100%;text-align:left;}
+.ni:hover{background:var(--accent-light);color:var(--accent);}
+.ni.active{background:var(--accent);color:#fff;}
+.main{margin-left:var(--sw);margin-top:var(--hh);padding:28px;min-height:calc(100vh - var(--hh));}
+.pg{display:none;}
+.pg.active{display:block;animation:fi .22s ease;}
+@keyframes fi{from{opacity:0;transform:translateY(7px);}to{opacity:1;transform:translateY(0);}}
+.ptitle{font-family:'DM Serif Display',serif;font-size:26px;color:var(--accent);margin-bottom:4px;}
+.psub{font-size:13px;color:var(--text3);margin-bottom:24px;}
+
+/* COMPONENTS */
+.card{background:var(--surface);border-radius:var(--radius);box-shadow:var(--sh);padding:20px;border:1px solid var(--border);}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+.sg4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px;}
+.sc{background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);padding:20px;display:flex;align-items:center;gap:16px;box-shadow:var(--sh);}
+.sib{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;color:#fff;}
+.sib.blue{background:var(--accent);}.sib.green{background:var(--success);}
+.sib.orange{background:var(--warning);}.sib.red{background:var(--danger);}
+.sib.purple{background:var(--purple);}
+.sn{font-family:'DM Serif Display',serif;font-size:28px;color:var(--text);line-height:1;}
+.sl{font-size:12px;color:var(--text3);margin-top:2px;}
+.tw{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:13.5px;}
+thead th{text-align:left;font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;padding:10px 12px;border-bottom:2px solid var(--border);}
+tbody td{padding:11px 12px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:middle;}
+tbody tr:last-child td{border-bottom:none;}
+tbody tr:hover td{background:var(--accent-light);}
+.badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;}
+.b-g{background:var(--success-light);color:var(--success);}
+.b-b{background:var(--accent-light);color:var(--accent);}
+.b-o{background:var(--warning-light);color:var(--warning);}
+.b-r{background:var(--danger-light);color:var(--danger);}
+.b-gr{background:var(--surface2);color:var(--text2);}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all .15s;font-family:inherit;}
+.btn-p{background:var(--accent);color:#fff;}.btn-p:hover{background:var(--accent2);}
+.btn-o{background:transparent;color:var(--accent);border:1.5px solid var(--accent);}.btn-o:hover{background:var(--accent-light);}
+.btn-d{background:var(--danger);color:#fff;}.btn-d:hover{opacity:.85;}
+.sm{padding:5px 12px;font-size:12px;}
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.fgr{display:flex;flex-direction:column;gap:6px;}
+.fgr.full{grid-column:1/-1;}
+label{font-size:12px;font-weight:600;color:var(--text2);}
+input,select,textarea{padding:10px 13px;border-radius:8px;border:1.5px solid var(--border);font-size:13.5px;font-family:inherit;color:var(--text);background:var(--bg);transition:border-color .15s,box-shadow .15s;outline:none;}
+input:focus,select:focus,textarea:focus{border-color:var(--accent2);box-shadow:0 0 0 3px rgba(46,134,171,.12);background:#fff;}
+textarea{resize:vertical;min-height:80px;}
+.fa{display:flex;gap:10px;justify-content:flex-end;margin-top:18px;padding-top:14px;border-top:1px solid var(--border);}
+.sb{display:flex;gap:10px;margin-bottom:18px;align-items:center;}
+.sw-srch{position:relative;flex:1;}.sw-srch input{width:100%;}
+.mo{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;align-items:center;justify-content:center;}
+.mo.open{display:flex;}
+.md{background:var(--surface);border-radius:16px;width:700px;max-width:95vw;max-height:92vh;overflow-y:auto;box-shadow:var(--shlg);animation:su .22s ease;}
+@keyframes su{from{opacity:0;transform:translateY(22px);}to{opacity:1;transform:translateY(0);}}
+.mh{padding:20px 24px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.mt{font-family:'DM Serif Display',serif;font-size:20px;color:var(--accent);}
+.mb{padding:24px;}
+.mc{background:none;border:none;font-size:20px;cursor:pointer;color:var(--text3);padding:4px;border-radius:6px;}
+.mc:hover{color:var(--danger);}
+.sh{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+.stit{font-size:15px;font-weight:700;color:var(--text);}
+.tab-bar{display:flex;gap:4px;border-bottom:2px solid var(--border);margin-bottom:20px;}
+.tab{padding:8px 16px;font-size:13px;font-weight:600;cursor:pointer;color:var(--text3);border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .15s;border-radius:6px 6px 0 0;}
+.tab:hover{color:var(--accent);background:var(--accent-light);}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent);}
+.row{display:flex;align-items:center;gap:12px;padding:11px 16px;border-radius:8px;border:1px solid var(--border);margin-bottom:8px;background:var(--surface);}
+.row-d{font-size:12px;font-weight:700;color:var(--accent);min-width:90px;}
+.row-i{flex:1;}.row-t{font-weight:600;font-size:13.5px;}.row-s{font-size:12px;color:var(--text3);}
+.fs{margin-bottom:20px;}
+.fst{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text3);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border);}
+.fr{display:flex;gap:12px;margin-bottom:8px;font-size:13.5px;}
+.fl{font-weight:600;min-width:160px;color:var(--text2);}
+.fv{color:var(--text);}
+.ph{background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:16px;padding:32px;color:#fff;display:flex;align-items:center;gap:24px;margin-bottom:24px;box-shadow:var(--shlg);}
+.pg2{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+.pc{background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);padding:24px;box-shadow:var(--sh);}
+.pct{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text3);margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--border);}
+.prow{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);font-size:13.5px;}
+.prow:last-child{border-bottom:none;}
+.prl{color:var(--text2);font-weight:600;font-size:12px;}
+.prv{color:var(--text);font-weight:500;}
+.rg{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:14px;}
+.rcd{border-radius:10px;padding:16px;border:1.5px solid var(--border);display:flex;flex-direction:column;gap:8px;transition:all .15s;}
+.rcd:hover{transform:translateY(-2px);box-shadow:var(--sh);}
+.rcd.full{border-color:var(--danger);background:var(--danger-light);}
+.rcd.free{border-color:var(--success);background:var(--success-light);}
+.rnum{font-family:'DM Serif Display',serif;font-size:20px;}
+.form-sep{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text3);padding:14px 0 6px;border-top:1px solid var(--border);grid-column:1/-1;margin-top:4px;}
+
+/* Toast */
+#toast-container{position:fixed;bottom:28px;right:28px;z-index:9999;display:flex;flex-direction:column;gap:10px;pointer-events:none;}
+.toast{padding:13px 18px;border-radius:10px;font-size:13.5px;font-weight:500;color:#fff;box-shadow:0 4px 20px rgba(0,0,0,.22);opacity:0;transform:translateY(12px);transition:all .28s ease;pointer-events:none;max-width:340px;line-height:1.4;}
+.toast.show{opacity:1;transform:translateY(0);}
+.toast.t-ok{background:#1a7a4a;}
+.toast.t-err{background:#c0392b;}
+.toast.t-info{background:#1a5f7a;}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="ll">
+    <div class="brand">Medi<span>Care</span></div>
+    <div class="tagline">Hospitalized Patients Management System</div>
+    <div class="role-cards">
+      <div class="rc-label">Select your role</div>
+      <div class="rc" id="rc-secretary" onclick="selRole('secretary')"><div><div class="rc-name">Medical Secretary</div><div class="rc-sub">Patient registration &amp; scheduling</div></div></div>
+      <div class="rc" id="rc-doctor" onclick="selRole('doctor')"><div><div class="rc-name">Doctor</div><div class="rc-sub">Consultations &amp; medical records</div></div></div>
+      <div class="rc" id="rc-nurse" onclick="selRole('nurse')"><div><div class="rc-name">Nurse</div><div class="rc-sub">Patient care &amp; vital signs</div></div></div>
+      <div class="rc" id="rc-admin" onclick="selRole('admin')"><div><div class="rc-name">Administrator</div><div class="rc-sub">Staff &amp; hospital statistics</div></div></div>
+    </div>
+  </div>
+  <div class="lr">
+    <div class="lcard">
+      <h2>Welcome back</h2>
+      <p>Sign in to access the hospital management system.</p>
+      <div class="sel-tag" id="sel-tag"><span id="sel-name">Role not selected</span></div>
+      <div class="lerr" id="lerr"></div>
+      <form onsubmit="doLogin(event)" novalidate>
+        <div class="lf"><label>Username</label><input type="text" id="lu" placeholder="Enter your username"/></div>
+        <div class="lf"><label>Password</label>
+          <div class="pw">
+            <input type="password" id="lp" placeholder="Enter your password"/>
+            <button type="button" class="pw-eye" onclick="togglePw()">Show</button>
+          </div>
+        </div>
+        <button type="submit" class="lbtn">Sign In</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- SECRETARY APP -->
+<div id="sec-app" class="app-screen">
+  <header class="hdr">
+    <div class="hdr-logo">Medi<span>Care</span></div><div class="hdiv"></div>
+    <span class="hbadge">Medical Secretary</span>
+    <div class="hsp"></div>
+    <div class="hright"><button class="lout" onclick="doLogout()">Logout</button></div>
+  </header>
+  <nav class="sidebar" id="sec-nav">
+    <div class="ns">Main</div>
+    <button class="ni active" onclick="goTo('sec','s-dash',this)">Dashboard</button>
+    <div class="ns">Patients</div>
+    <button class="ni" onclick="goTo('sec','s-register',this)">Register New Patient</button>
+    <button class="ni" onclick="goTo('sec','s-patients',this)">Patient List</button>
+    <div class="ns">Scheduling</div>
+    <button class="ni" onclick="goTo('sec','s-appointments',this)">Schedule Appointments</button>
+    <div class="ns">Beds</div>
+    <button class="ni" onclick="goTo('sec','s-beds',this)">Bed Occupancy</button>
+    <div class="ns">Account</div>
+    <button class="ni" onclick="goTo('sec','s-profile',this)">My Profile</button>
+  </nav>
+  <main class="main">
+    <!-- DASHBOARD -->
+    <div class="pg active" id="s-dash">
+      <div class="ptitle">Dashboard</div><div class="psub">Hospital overview.</div>
+      <div class="sg4">
+        <div class="sc"><div class="sib blue">Pts</div><div><div class="sn" id="s-n-total">0</div><div class="sl">Total Patients</div></div></div>
+        <div class="sc"><div class="sib green">Adm</div><div><div class="sn" id="s-n-adm">0</div><div class="sl">Admitted</div></div></div>
+      </div>
+      <div class="g2">
+        <div class="card"><div class="sh"><div class="stit">Recent Patients</div><button class="btn btn-o sm" onclick="goTo('sec','s-patients')">View All</button></div><div id="s-dash-pts"></div></div>
+        <div class="card"><div class="sh"><div class="stit">Bed Occupancy</div><button class="btn btn-o sm" onclick="goTo('sec','s-beds')">View Beds</button></div><div id="s-dash-rooms"></div></div>
+      </div>
+    </div>
+
+    <!-- REGISTER PATIENT -->
+    <div class="pg" id="s-register">
+      <div class="ptitle">Register Patient</div><div class="psub">New patient or re-admission of an existing patient.</div>
+      <div class="card" style="margin-bottom:16px;">
+        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-size:14px;font-weight:600;color:var(--text);">
+          <input type="checkbox" id="rf-returning" onchange="toggleReturning()" style="width:18px;height:18px;cursor:pointer;accent-color:var(--accent);"/>
+          This is a returning patient (re-admission)
+        </label>
+      </div>
+
+      <!-- RE-ADMISSION SECTION -->
+      <div id="rf-returning-section" style="display:none;">
+        <div class="card" style="margin-bottom:16px;">
+          <div class="stit" style="margin-bottom:14px;">Select Existing Patient</div>
+          <input type="search" id="rf-ret-search" placeholder="Search discharged patients by name or ID..." oninput="renderRetPatList(this.value)" style="width:100%;margin-bottom:10px;"/>
+          <div id="rf-ret-list" style="border:1.5px solid var(--border);border-radius:8px;max-height:200px;overflow-y:auto;background:var(--surface);margin-bottom:14px;"></div>
+          <div id="rf-ret-selected" style="display:none;padding:10px 14px;border-radius:8px;background:var(--accent-light);color:var(--accent);font-weight:600;font-size:13.5px;margin-bottom:14px;"></div>
+          <input type="hidden" id="rf-ret-id"/>
+        </div>
+        <div class="card" id="rf-readmit-form" style="display:none;">
+          <div class="stit" style="margin-bottom:14px;">New Admission</div>
+          <div class="fg">
+            <div class="fgr"><label>Department *</label>
+              <select id="rf-ret-dept" onchange="loadBeds('rf-ret-dept','rf-ret-bed')">
+                <option value="">— Select Department —</option>
+                <option value="A">Dept A — General Medicine</option>
+                <option value="B">Dept B — Cardiology</option>
+                <option value="C">Dept C — Pediatrics</option>
+                <option value="D">Dept D — Orthopedics</option>
+                <option value="E">Dept E — Neurology</option>
+                <option value="F">Dept F — Maternity</option>
+              </select>
+            </div>
+            <div class="fgr"><label>Bed *</label><select id="rf-ret-bed"><option value="">— Select department first —</option></select></div>
+            <div class="fgr"><label>Admission Date *</label><input type="text" id="rf-ret-date" placeholder="DD/MM/YYYY" maxlength="10" oninput="fmtDate(this)"/></div>
+          </div>
+          <div class="fa">
+            <button type="button" class="btn btn-o" onclick="clearReg()">Clear</button>
+            <button type="button" class="btn btn-p" onclick="submitReadmit()">Re-admit Patient</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- NEW PATIENT SECTION -->
+      <div id="rf-new-section">
+        <div class="card">
+          <form onsubmit="submitReg(event)" novalidate>
+            <div class="fg">
+              <div class="fgr full"><span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text3);">Personal Information</span></div>
+              <div class="fgr"><label>First Name *</label><input id="rf1" placeholder="e.g. Karim"/></div>
+              <div class="fgr"><label>Last Name *</label><input id="rf2" placeholder="e.g. Messaoudi"/></div>
+              <div class="fgr"><label>Date of Birth *</label><input type="text" id="rf3" placeholder="DD/MM/YYYY" maxlength="10" oninput="fmtDate(this)"/></div>
+              <div class="fgr"><label>Gender *</label><select id="rf4"><option value="">— Select —</option><option>Male</option><option>Female</option></select></div>
+              <div class="fgr"><label>Blood Type *</label><select id="rf5"><option value="">— Select —</option><option>A+</option><option>A-</option><option>B+</option><option>B-</option><option>AB+</option><option>AB-</option><option>O+</option><option>O-</option></select></div>
+              <div class="fgr"><label>Phone *</label><input type="tel" id="rf6" placeholder="e.g. 0551 234 567"/></div>
+              <div class="fgr full"><label>Home Address *</label><input id="rf7" placeholder="Street, City, Province"/></div>
+              <div class="fgr"><label>Known Allergies</label><input id="rf8" placeholder="e.g. Penicillin, None"/></div>
+              <div class="fgr"><label>Pre-existing Conditions</label><input id="rf9" placeholder="e.g. Diabetes"/></div>
+              <div class="form-sep">Assign Bed</div>
+              <div class="fgr"><label>Department *</label>
+                <select id="rf-dept" onchange="loadBeds('rf-dept','rf-bed')">
+                  <option value="">— Select Department —</option>
+                  <option value="A">Dept A — General Medicine</option>
+                  <option value="B">Dept B — Cardiology</option>
+                  <option value="C">Dept C — Pediatrics</option>
+                  <option value="D">Dept D — Orthopedics</option>
+                  <option value="E">Dept E — Neurology</option>
+                  <option value="F">Dept F — Maternity</option>
+                </select>
+              </div>
+              <div class="fgr"><label>Bed *</label><select id="rf-bed"><option value="">— Select department first —</option></select></div>
+              <div class="fgr"><label>Admission Date *</label><input type="text" id="rf-date" placeholder="DD/MM/YYYY" maxlength="10" oninput="fmtDate(this)"/></div>
+            </div>
+            <div class="fa">
+              <button type="button" class="btn btn-o" onclick="clearReg()">Clear</button>
+              <button type="submit" class="btn btn-p">Register Patient</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- PATIENT LIST -->
+    <div class="pg" id="s-patients">
+      <div class="ptitle">Patient List</div><div class="psub">Search, view and edit patient information.</div>
+      <div class="card">
+        <div class="sb">
+          <div class="sw-srch"><input type="search" id="s-search" placeholder="Search by name or ID…" oninput="renderSecPts()"/></div>
+          <button class="btn btn-p" onclick="goTo('sec','s-register')">Register New</button>
+        </div>
+        <div class="tw"><table>
+          <thead><tr><th>ID</th><th>Full Name</th><th>Dept</th><th>Bed</th><th>Admitted</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody id="s-ptbody"></tbody>
+        </table></div>
+      </div>
+    </div>
+
+    <!-- APPOINTMENTS -->
+    <div class="pg" id="s-appointments">
+      <div class="ptitle">Schedule Appointments</div><div class="psub">Schedule appointments and assign a doctor to a patient.</div>
+      <div class="g2">
+        <div class="card">
+          <div class="stit" style="margin-bottom:16px;">New Appointment</div>
+          <form onsubmit="scheduleAppt(event)" novalidate>
+            <div style="display:flex;flex-direction:column;gap:13px;">
+              <div class="fgr">
+                <label>Patient *</label>
+                <div id="appt-selected-pat" style="display:none;padding:9px 13px;border-radius:8px;background:var(--accent-light);color:var(--accent);font-size:13.5px;font-weight:600;border:1.5px solid var(--accent2);margin-bottom:6px;display:none;align-items:center;justify-content:space-between;">
+                  <span id="appt-selected-name">—</span>
+                  <button type="button" onclick="clearPatSel()" style="background:none;border:none;cursor:pointer;color:var(--accent);font-size:12px;font-weight:600;">Change</button>
+                </div>
+                <input type="hidden" id="appt-pat"/>
+                <div id="appt-pat-picker">
+                  <input type="search" id="appt-pat-search" placeholder="Search patient by name or ID…" oninput="renderApptPatList(this.value)" style="width:100%;margin-bottom:6px;"/>
+                  <div id="appt-pat-list" style="border:1.5px solid var(--border);border-radius:8px;max-height:200px;overflow-y:auto;background:var(--surface);"></div>
+                </div>
+              </div>
+              <div class="fgr"><label>Assign Doctor *</label><select id="appt-doc"><option value="">— Select Doctor —</option></select></div>
+              <div class="fgr"><label>Date *</label><input type="date" id="appt-date"/></div>
+              <div class="fg" style="gap:12px;">
+                <div class="fgr"><label>From (hour)</label><select id="appt-from"></select></div>
+                <div class="fgr"><label>To (hour)</label><select id="appt-to"></select></div>
+              </div>
+              <div class="fgr"><label>Type</label><select id="appt-type"><option>Consultation</option><option>Follow-up</option><option>Intervention / Surgery</option><option>Emergency</option></select></div>
+              <button type="submit" class="btn btn-p">Schedule Appointment</button>
+            </div>
+          </form>
+        </div>
+        <div class="card">
+          <div class="sh"><div class="stit" id="sched-title">Appointments</div><span id="sched-badge"></span></div>
+          <div id="sched-panel"><div style="text-align:center;padding:24px;color:var(--text3);font-size:13px;">Select a date to view appointments.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BED OCCUPANCY -->
+    <div class="pg" id="s-beds">
+      <div class="ptitle">Bed Occupancy</div><div class="psub">Current bed status by department.</div>
+      <div class="tab-bar" style="flex-wrap:wrap;">
+        <div class="tab active" onclick="switchDept(this,'bd-a')">Dept A — General</div>
+        <div class="tab" onclick="switchDept(this,'bd-b')">Dept B — Cardiology</div>
+        <div class="tab" onclick="switchDept(this,'bd-c')">Dept C — Pediatrics</div>
+        <div class="tab" onclick="switchDept(this,'bd-d')">Dept D — Orthopedics</div>
+        <div class="tab" onclick="switchDept(this,'bd-e')">Dept E — Neurology</div>
+        <div class="tab" onclick="switchDept(this,'bd-f')">Dept F — Maternity</div>
+      </div>
+      <div id="bd-a"></div>
+      <div id="bd-b" style="display:none;"></div>
+      <div id="bd-c" style="display:none;"></div>
+      <div id="bd-d" style="display:none;"></div>
+      <div id="bd-e" style="display:none;"></div>
+      <div id="bd-f" style="display:none;"></div>
+    </div>
+
+    <!-- PROFILE -->
+    <div class="pg" id="s-profile">
+      <div class="ptitle">My Profile</div>
+      <div class="ph"><div>
+        <div style="font-size:13px;opacity:.8;background:rgba(255,255,255,.15);padding:4px 12px;border-radius:20px;display:inline-block;margin-bottom:6px;">Medical Secretary</div>
+        <div style="font-family:'DM Serif Display',serif;font-size:22px;margin-bottom:4px;">Receptionist — Front Desk</div>
+      </div></div>
+      <div class="pg2">
+        <div class="pc"><div class="pct">Professional Details</div>
+          <div class="prow"><div class="prl">ID</div><div class="prv" id="sec-prof-id">—</div></div>
+          <div class="prow"><div class="prl">Role</div><div class="prv">Medical Secretary</div></div>
+          <div class="prow"><div class="prl">Username</div><div class="prv" id="sec-prof-user">—</div></div>
+          <div class="prow"><div class="prl">Phone</div><div class="prv" id="sec-prof-phone">—</div></div>
+        </div>
+        <div class="pc"><div class="pct">Modify Password</div>
+          <form onsubmit="chgPwd(event,'sp1','sp2','sp3')" novalidate style="display:flex;flex-direction:column;gap:13px;">
+            <div class="fgr"><label>Current Password</label><input type="password" id="sp1"/></div>
+            <div class="fgr"><label>New Password</label><input type="password" id="sp2"/></div>
+            <div class="fgr"><label>Confirm</label><input type="password" id="sp3"/></div>
+            <button type="submit" class="btn btn-p sm" style="align-self:flex-end;">Update Password</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- DOCTOR APP -->
+<div id="doc-app" class="app-screen">
+  <header class="hdr">
+    <div class="hdr-logo">Medi<span>Care</span></div><div class="hdiv"></div>
+    <span class="hbadge" id="doc-badge">Doctor</span>
+    <div class="hsp"></div>
+    <div class="hright"><button class="lout" onclick="doLogout()">Logout</button></div>
+  </header>
+  <nav class="sidebar" id="doc-nav">
+    <div class="ns">Main</div>
+    <button class="ni active" onclick="goTo('doc','d-dash',this)">Dashboard</button>
+    <div class="ns">Appointments</div>
+    <button class="ni" onclick="goTo('doc','d-appts',this)">Appointments</button>
+    <div class="ns">Patients</div>
+    <button class="ni" onclick="goTo('doc','d-patients',this)">Patient List</button>
+    <div class="ns">Account</div>
+    <button class="ni" onclick="goTo('doc','d-profile',this)">My Profile</button>
+  </nav>
+  <main class="main">
+    <div class="pg active" id="d-dash">
+      <div class="ptitle" id="d-dash-title">Doctor Dashboard</div><div class="psub">Your department overview.</div>
+      <div style="margin-bottom:20px;">
+        <div class="sc" style="max-width:300px;"><div class="sib blue">Pts</div><div><div class="sn" id="d-n-pts">0</div><div class="sl">Department Patients</div></div></div>
+      </div>
+      <div class="card">
+        <div class="sh"><div class="stit">Upcoming Appointments</div><button class="btn btn-o sm" onclick="goTo('doc','d-appts')">View All</button></div>
+        <div id="d-dash-appts"><div style="text-align:center;padding:20px;color:var(--text3);font-size:13px;">No appointments yet.</div></div>
+      </div>
+    </div>
+    <div class="pg" id="d-appts">
+      <div class="ptitle">Appointments</div><div class="psub">All appointments assigned to you.</div>
+      <div class="card">
+        <div class="sb"><div class="sw-srch"><input type="search" placeholder="Search by patient name…" oninput="renderDocAppts(this.value)"/></div></div>
+        <div class="tw"><table>
+          <thead><tr><th>Date</th><th>Time</th><th>Patient</th><th>Type</th><th>Bed</th><th>Actions</th></tr></thead>
+          <tbody id="d-appts-body"></tbody>
+        </table></div>
+      </div>
+    </div>
+    <div class="pg" id="d-patients">
+      <div class="ptitle">Patient List</div><div class="psub" id="d-pts-sub">All patients in your department.</div>
+      <div class="card">
+        <div class="sb"><div class="sw-srch"><input type="search" placeholder="Search…" oninput="renderDocPts(this.value)"/></div></div>
+        <div class="tw"><table>
+          <thead><tr><th>ID</th><th>Name</th><th>Dept</th><th>Bed</th><th>Admitted</th><th>Actions</th></tr></thead>
+          <tbody id="d-ptbody"></tbody>
+        </table></div>
+      </div>
+    </div>
+    <div class="pg" id="d-profile">
+      <div class="ptitle">My Profile</div>
+      <div class="ph" style="background:linear-gradient(135deg,#1a5f7a,#1a7a4a);">
+        <div>
+          <div style="font-size:13px;opacity:.8;background:rgba(255,255,255,.15);padding:4px 12px;border-radius:20px;display:inline-block;margin-bottom:6px;">Doctor</div>
+          <div style="font-family:'DM Serif Display',serif;font-size:22px;margin-bottom:4px;" id="d-prof-name">Dr. —</div>
+          <div style="font-size:13px;opacity:.65;" id="d-prof-info">Department</div>
+        </div>
+      </div>
+      <div class="pg2">
+        <div class="pc"><div class="pct">Professional Details</div>
+          <div class="prow"><div class="prl">ID</div><div class="prv" id="d-prof-id">—</div></div>
+          <div class="prow"><div class="prl">Role</div><div class="prv">Doctor</div></div>
+          <div class="prow"><div class="prl">Username</div><div class="prv" id="d-prof-user">—</div></div>
+          <div class="prow"><div class="prl">Phone</div><div class="prv" id="d-prof-phone">—</div></div>
+          <div class="prow"><div class="prl">Specialty</div><div class="prv" id="d-prof-spec">—</div></div>
+          <div class="prow"><div class="prl">Department</div><div class="prv" id="d-prof-wing">—</div></div>
+        </div>
+        <div class="pc"><div class="pct">Modify Password</div>
+          <form onsubmit="chgPwd(event,'dp1','dp2','dp3')" novalidate style="display:flex;flex-direction:column;gap:13px;">
+            <div class="fgr"><label>Current</label><input type="password" id="dp1"/></div>
+            <div class="fgr"><label>New</label><input type="password" id="dp2"/></div>
+            <div class="fgr"><label>Confirm</label><input type="password" id="dp3"/></div>
+            <button type="submit" class="btn btn-p sm" style="align-self:flex-end;">Update</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- NURSE APP -->
+<div id="nur-app" class="app-screen">
+  <header class="hdr">
+    <div class="hdr-logo">Medi<span>Care</span></div><div class="hdiv"></div>
+    <span class="hbadge" id="nur-badge">Nurse</span>
+    <div class="hsp"></div>
+    <div class="hright"><button class="lout" onclick="doLogout()">Logout</button></div>
+  </header>
+  <nav class="sidebar" id="nur-nav">
+    <div class="ns">Main</div>
+    <button class="ni active" onclick="goTo('nur','n-dash',this)">Dashboard</button>
+    <div class="ns">Patients</div>
+    <button class="ni" onclick="goTo('nur','n-patients',this)">Patient List</button>
+    <div class="ns">Account</div>
+    <button class="ni" onclick="goTo('nur','n-profile',this)">My Profile</button>
+  </nav>
+  <main class="main">
+    <div class="pg active" id="n-dash">
+      <div class="ptitle" id="n-dash-title">Nurse Dashboard</div><div class="psub" id="n-dash-sub">Your department overview.</div>
+      <div class="sc" style="max-width:300px;margin-bottom:20px;"><div class="sib blue">Pts</div><div><div class="sn" id="n-n-pts">0</div><div class="sl">Patients in My Department</div></div></div>
+      <div class="card">
+        <div class="sh"><div class="stit">Recent Patients</div><button class="btn btn-o sm" onclick="goTo('nur','n-patients')">View All</button></div>
+        <div id="n-dash-pts"><div style="text-align:center;padding:20px;color:var(--text3);font-size:13px;">No patients in your department yet.</div></div>
+      </div>
+    </div>
+    <div class="pg" id="n-patients">
+      <div class="ptitle">Patient List</div><div class="psub" id="n-pts-sub">All patients in your department.</div>
+      <div class="card">
+        <div class="sb"><div class="sw-srch"><input type="search" placeholder="Search…" oninput="renderNurPts(this.value)"/></div></div>
+        <div class="tw"><table>
+          <thead><tr><th>ID</th><th>Name</th><th>Dept</th><th>Bed</th><th>Admitted</th><th>Actions</th></tr></thead>
+          <tbody id="n-ptbody"></tbody>
+        </table></div>
+      </div>
+    </div>
+    <div class="pg" id="n-profile">
+      <div class="ptitle">My Profile</div>
+      <div class="ph" style="background:linear-gradient(135deg,#1a7a4a,#2e86ab);">
+        <div>
+          <div style="font-size:13px;opacity:.8;background:rgba(255,255,255,.15);padding:4px 12px;border-radius:20px;display:inline-block;margin-bottom:6px;">Nurse</div>
+          <div style="font-family:'DM Serif Display',serif;font-size:22px;margin-bottom:4px;" id="n-prof-name">Nurse</div>
+          <div style="font-size:13px;opacity:.65;" id="n-prof-sub">Dept —</div>
+        </div>
+      </div>
+      <div class="pg2">
+        <div class="pc"><div class="pct">Professional Details</div>
+          <div class="prow"><div class="prl">ID</div><div class="prv" id="n-prof-id">—</div></div>
+          <div class="prow"><div class="prl">Role</div><div class="prv">Nurse</div></div>
+          <div class="prow"><div class="prl">Username</div><div class="prv" id="n-prof-user">—</div></div>
+          <div class="prow"><div class="prl">Phone</div><div class="prv" id="n-prof-phone">—</div></div>
+          <div class="prow"><div class="prl">Department</div><div class="prv" id="n-prof-wing">—</div></div>
+        </div>
+        <div class="pc"><div class="pct">Modify Password</div>
+          <form onsubmit="chgPwd(event,'np1','np2','np3')" novalidate style="display:flex;flex-direction:column;gap:13px;">
+            <div class="fgr"><label>Current</label><input type="password" id="np1"/></div>
+            <div class="fgr"><label>New</label><input type="password" id="np2"/></div>
+            <div class="fgr"><label>Confirm</label><input type="password" id="np3"/></div>
+            <button type="submit" class="btn btn-p sm" style="align-self:flex-end;">Update</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- ADMIN APP -->
+<div id="adm-app" class="app-screen">
+  <header class="hdr">
+    <div class="hdr-logo">Medi<span>Care</span></div><div class="hdiv"></div>
+    <span class="hbadge">Administrator</span>
+    <div class="hsp"></div>
+    <div class="hright"><button class="lout" onclick="doLogout()">Logout</button></div>
+  </header>
+  <nav class="sidebar" id="adm-nav">
+    <div class="ns">Main</div>
+    <button class="ni active" onclick="goTo('adm','a-stats',this)">Hospital Statistics</button>
+    <div class="ns">Staff</div>
+    <button class="ni" onclick="goTo('adm','a-staff',this)">Staff List</button>
+    <div class="ns">Account</div>
+    <button class="ni" onclick="goTo('adm','a-profile',this)">My Profile</button>
+  </nav>
+  <main class="main">
+    <div class="pg active" id="a-stats">
+      <div class="ptitle">Hospital Statistics</div><div class="psub">Overview of hospital activity.</div>
+      <div class="sg4">
+        <div class="sc"><div class="sib blue">Doc</div><div><div class="sn" id="a-n-doc">0</div><div class="sl">Doctors</div></div></div>
+        <div class="sc"><div class="sib green">Nur</div><div><div class="sn" id="a-n-nur">0</div><div class="sl">Nurses</div></div></div>
+        <div class="sc"><div class="sib orange">Sec</div><div><div class="sn" id="a-n-sec">0</div><div class="sl">Secretaries</div></div></div>
+        <div class="sc"><div class="sib purple">Pts</div><div><div class="sn" id="a-n-pat">0</div><div class="sl">Total Patients</div></div></div>
+      </div>
+      <div style="margin-bottom:20px;">
+        <div class="sc" style="max-width:300px;"><div class="sib green">Adm</div><div><div class="sn" id="a-n-adm">0</div><div class="sl">Currently Admitted</div></div></div>
+      </div>
+      <div class="card"><div class="sh"><div class="stit">Department Occupancy</div></div><div id="a-wing-stats"></div></div>
+    </div>
+    <div class="pg" id="a-staff">
+      <div class="ptitle">Staff List</div><div class="psub">Search, add and remove staff accounts.</div>
+      <div class="card">
+        <div class="sb">
+          <div class="sw-srch"><input type="search" placeholder="Search by name or username…" oninput="renderStaff(this.value)"/></div>
+          <button class="btn btn-p" onclick="openMo('add-staff-mo')">Create Account</button>
+        </div>
+        <div class="tw"><table>
+          <thead><tr><th>ID</th><th>Name</th><th>Username</th><th>Role</th><th>Phone</th><th>Specialty / Department</th><th>Manage Account</th></tr></thead>
+          <tbody id="a-staff-body"></tbody>
+        </table></div>
+      </div>
+    </div>
+    <div class="pg" id="a-profile">
+      <div class="ptitle">My Profile</div>
+      <div class="ph" style="background:linear-gradient(135deg,#1a2332,#1a5f7a);">
+        <div>
+          <div style="font-size:13px;opacity:.8;background:rgba(255,255,255,.15);padding:4px 12px;border-radius:20px;display:inline-block;margin-bottom:6px;">Administrator</div>
+          <div style="font-family:'DM Serif Display',serif;font-size:22px;margin-bottom:4px;">System Administrator</div>
+          <div style="font-size:13px;opacity:.65;">Full system access</div>
+        </div>
+      </div>
+      <div class="pg2">
+        <div class="pc"><div class="pct">Professional Details</div>
+          <div class="prow"><div class="prl">ID</div><div class="prv">STF-ADM</div></div>
+          <div class="prow"><div class="prl">Role</div><div class="prv">Administrator</div></div>
+          <div class="prow"><div class="prl">Username</div><div class="prv">admin</div></div>
+        </div>
+        <div class="pc"><div class="pct">Modify Password</div>
+          <form onsubmit="chgPwd(event,'ap1','ap2','ap3')" novalidate style="display:flex;flex-direction:column;gap:13px;">
+            <div class="fgr"><label>Current Password</label><input type="password" id="ap1"/></div>
+            <div class="fgr"><label>New Password</label><input type="password" id="ap2"/></div>
+            <div class="fgr"><label>Confirm</label><input type="password" id="ap3"/></div>
+            <button type="submit" class="btn btn-p sm" style="align-self:flex-end;">Update</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- PATIENT FILE MODAL -->
+<div class="mo" id="file-mo" onclick="closeMoBg(event)">
+  <div class="md">
+    <div class="mh"><div class="mt" id="file-mo-title">Patient File</div><button class="mc" onclick="closeMo('file-mo')">X</button></div>
+    <div class="mb" id="file-mo-body"></div>
+  </div>
+</div>
+
+<!-- ADD STAFF MODAL -->
+<div class="mo" id="add-staff-mo" onclick="closeMoBg(event)">
+  <div class="md" style="width:520px;">
+    <div class="mh"><div class="mt">Create Account</div><button class="mc" onclick="closeMo('add-staff-mo')">X</button></div>
+    <div class="mb">
+      <form onsubmit="addStaff(event)" novalidate>
+        <div class="fg">
+          <div class="fgr"><label>Full Name *</label><input id="ns-name" placeholder="e.g. Dr. Sara Laila"/></div>
+          <div class="fgr"><label>Username *</label><input id="ns-user" placeholder="e.g. slaila"/></div>
+          <div class="fgr"><label>Password *</label><input type="password" id="ns-pass" placeholder="Min. 6 characters"/></div>
+          <div class="fgr"><label>Phone Number</label><input type="tel" id="ns-phone" placeholder="e.g. 0551 234 567"/></div>
+          <div class="fgr"><label>Role *</label>
+            <select id="ns-role" onchange="onRoleChange()">
+              <option value="">— Select —</option>
+              <option value="doctor">Doctor</option>
+              <option value="nurse">Nurse</option>
+              <option value="secretary">Medical Secretary</option>
+            </select>
+          </div>
+          <div class="fgr full" id="ns-wing-row" style="display:none;">
+            <label>Assign to Department *</label>
+            <select id="ns-wing">
+              <option value="">— Select Department —</option>
+              <option value="A">Dept A — General Medicine</option>
+              <option value="B">Dept B — Cardiology</option>
+              <option value="C">Dept C — Pediatrics</option>
+              <option value="D">Dept D — Orthopedics</option>
+              <option value="E">Dept E — Neurology</option>
+              <option value="F">Dept F — Maternity</option>
+            </select>
+          </div>
+          <div class="fgr full" id="ns-spec-row" style="display:none;">
+            <label>Specialty *</label>
+            <select id="ns-spec">
+              <option value="">— Select Specialty —</option>
+              <option value="Cardiologist">Cardiologist</option>
+              <option value="Pediatrician">Pediatrician</option>
+              <option value="Neurologist">Neurologist</option>
+              <option value="General Practitioner">General Practitioner</option>
+              <option value="Orthopedics">Orthopedics</option>
+              <option value="Gynecologist">Gynecologist</option>
+            </select>
+          </div>
+        </div>
+        <div class="fa">
+          <button type="button" class="btn btn-o sm" onclick="closeMo('add-staff-mo')">Cancel</button>
+          <button type="submit" class="btn btn-p sm">Create Account</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- EDIT STAFF MODAL -->
+<div class="mo" id="edit-staff-mo" onclick="closeMoBg(event)">
+  <div class="md" style="width:420px;">
+    <div class="mh"><div class="mt">Edit Account</div><button class="mc" onclick="closeMo('edit-staff-mo')">X</button></div>
+    <div class="mb">
+      <form onsubmit="saveEditStaff(event)" novalidate>
+        <input type="hidden" id="es-user"/>
+        <div style="display:flex;flex-direction:column;gap:13px;">
+          <div class="fgr"><label>Phone Number</label><input type="tel" id="es-phone" placeholder="e.g. 0551 234 567"/></div>
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text3);padding-top:10px;border-top:1px solid var(--border);">Change Password (leave blank to keep current)</div>
+          <div class="fgr"><label>New Password</label><input type="password" id="es-pass" placeholder="Min. 6 characters"/></div>
+          <div class="fgr"><label>Confirm Password</label><input type="password" id="es-pass2" placeholder="Repeat new password"/></div>
+        </div>
+        <div class="fa">
+          <button type="button" class="btn btn-o sm" onclick="closeMo('edit-staff-mo')">Cancel</button>
+          <button type="submit" class="btn btn-p sm">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div id="toast-container"></div>
+
+<script>
+// ══════════════════════════════════════
+//  DATA
+// ══════════════════════════════════════
+
+// Departments: key -> { name, dept, beds }
+var DEPTS = {
+  A: { name:'Dept A', dept:'General Medicine',  specialty:'General Practitioner', beds:10 },
+  B: { name:'Dept B', dept:'Cardiology',         specialty:'Cardiologist',          beds:8  },
+  C: { name:'Dept C', dept:'Pediatrics',         specialty:'Pediatrician',          beds:6  },
+  D: { name:'Dept D', dept:'Orthopedics',        specialty:'Orthopedics',            beds:6  },
+  E: { name:'Dept E', dept:'Neurology',          specialty:'Neurologist',            beds:6  },
+  F: { name:'Dept F', dept:'Maternity',          specialty:'Gynecologist',           beds:6  }
+};
+
+// Staff list (doctors, nurses, secretary)
+var staff = [
+  {id:'STF-001',name:'Dr. Mehdi Khelil',  user:'khelil',   role:'doctor',    dept:'General Medicine', specialty:'General Practitioner', wing:'A', pass:'doc123',   phone:'0551 100 001'},
+  {id:'STF-002',name:'Dr. Amine Benali',  user:'benali',   role:'doctor',    dept:'Cardiology',        specialty:'Cardiologist',          wing:'B', pass:'doc123',   phone:'0551 100 002'},
+  {id:'STF-003',name:'Dr. Sara Rahmani',  user:'rahmani',  role:'doctor',    dept:'Pediatrics',        specialty:'Pediatrician',          wing:'C', pass:'doc123',   phone:'0551 100 003'},
+  {id:'STF-004',name:'Dr. Leila Amara',   user:'amara',    role:'doctor',    dept:'Orthopedics',       specialty:'Orthopedics',           wing:'D', pass:'doc123',   phone:'0551 100 004'},
+  {id:'STF-005',name:'Dr. Yacine Boukli', user:'boukli',   role:'doctor',    dept:'Cardiology',        specialty:'Cardiologist',          wing:'B', pass:'doc123',   phone:'0551 100 005'},
+  {id:'STF-006',name:'Dr. Karim Said',    user:'ksaid',    role:'doctor',    dept:'Neurology',         specialty:'Neurologist',           wing:'E', pass:'doc123',   phone:'0551 100 006'},
+  {id:'STF-007',name:'Dr. Sara Laila',    user:'slaila',   role:'doctor',    dept:'Maternity',         specialty:'Gynecologist',          wing:'F', pass:'doc123',   phone:'0551 100 007'},
+  {id:'STF-008',name:'Nurse Fatima Ould', user:'nurse1',   role:'nurse',     dept:'General Medicine',  wing:'A', pass:'nurse123', phone:'0561 200 001'},
+  {id:'STF-009',name:'Nurse Karim Bey',   user:'nurse2',   role:'nurse',     dept:'Cardiology',        wing:'B', pass:'nurse123', phone:'0561 200 002'},
+  {id:'STF-010',name:'Nurse Amina Dali',  user:'nurse3',   role:'nurse',     dept:'Pediatrics',        wing:'C', pass:'nurse123', phone:'0561 200 003'},
+  {id:'STF-011',name:'Nurse Riad Ferhi',  user:'nurse4',   role:'nurse',     dept:'Orthopedics',       wing:'D', pass:'nurse123', phone:'0561 200 004'},
+  {id:'STF-012',name:'Nurse Nadia Ferhi', user:'nurse5',   role:'nurse',     dept:'Neurology',         wing:'E', pass:'nurse123', phone:'0561 200 005'},
+  {id:'STF-013',name:'Nurse Rima Dali',   user:'nurse6',   role:'nurse',     dept:'Maternity',         wing:'F', pass:'nurse123', phone:'0561 200 006'},
+  {id:'STF-014',name:'Medical Secretary', user:'secretary',role:'secretary', dept:'Reception',         wing:'-', pass:'sec123',   phone:'0550 300 001'}
+];
+var stfCtr = 15;
+
+var patients     = [];  // all patients
+var appointments = [];  // all appointments
+var ptCtr        = 1;   // patient ID counter
+var curUser      = null; // logged-in user
+
+
+// ══════════════════════════════════════
+//  LOGIN / LOGOUT
+// ══════════════════════════════════════
+
+var selectedRole = '';
+
+function selRole(role) {
+  // highlight selected role card
+  document.querySelectorAll('.rc').forEach(function(c) { c.classList.remove('sel'); });
+  document.getElementById('rc-' + role).classList.add('sel');
+  selectedRole = role;
+  document.getElementById('sel-name').textContent = { secretary:'Medical Secretary', doctor:'Doctor', nurse:'Nurse', admin:'Administrator' }[role];
+  document.getElementById('sel-tag').classList.add('vis');
+}
+
+function togglePw() {
+  var f = document.getElementById('lp');
+  f.type = (f.type === 'password') ? 'text' : 'password';
+}
+
+function doLogin(e) {
+  e.preventDefault();
+  var u    = document.getElementById('lu').value.trim().toLowerCase();
+  var p    = document.getElementById('lp').value;
+  var err  = document.getElementById('lerr');
+  err.style.display = 'none';
+
+  if (!selectedRole) { showErr(err, 'Please select a role before signing in.'); return; }
+
+  // Admin account
+  if (u === 'admin' && p === 'admin123') {
+    if (selectedRole !== 'admin') { showErr(err, 'Wrong role selected.'); return; }
+    curUser = { name:'Administrator', user:'admin', role:'admin', wing:'-' };
+    showApp('adm-app');
+    goTo('adm', 'a-stats');
+    return;
+  }
+
+  // Find staff member
+  var member = staff.find(function(s) { return s.user === u && s.pass === p; });
+  if (!member) { showErr(err, 'Incorrect username or password.'); return; }
+  if (member.role !== selectedRole) { showErr(err, 'Wrong role selected.'); return; }
+
+  curUser = member;
+  showApp(member.role === 'secretary' ? 'sec-app' : member.role === 'doctor' ? 'doc-app' : member.role === 'nurse' ? 'nur-app' : 'adm-app');
+
+  // Fill profile info based on role
+  if (member.role === 'secretary') {
+    document.getElementById('sec-prof-id').textContent   = member.id;
+    document.getElementById('sec-prof-user').textContent = member.user;
+    document.getElementById('sec-prof-phone').textContent= member.phone || '—';
+    goTo('sec', 's-dash');
+  } else if (member.role === 'doctor') {
+    document.getElementById('doc-badge').textContent  = member.name;
+    document.getElementById('d-prof-name').textContent= member.name;
+    document.getElementById('d-prof-user').textContent= member.user;
+    document.getElementById('d-prof-id').textContent  = member.id;
+    document.getElementById('d-prof-phone').textContent= member.phone || '—';
+    document.getElementById('d-prof-spec').textContent = member.specialty || DEPTS[member.wing].specialty;
+    document.getElementById('d-prof-wing').textContent = 'Dept ' + member.wing + ' — ' + member.dept;
+    document.getElementById('d-prof-info').textContent = member.dept + ' — Dept ' + member.wing;
+    document.getElementById('d-dash-title').textContent= member.name + ' — Dashboard';
+    document.getElementById('d-pts-sub').textContent   = 'All patients in Dept ' + member.wing + ' — ' + member.dept;
+    goTo('doc', 'd-dash');
+  } else if (member.role === 'nurse') {
+    document.getElementById('nur-badge').textContent  = member.name;
+    document.getElementById('n-prof-name').textContent= member.name;
+    document.getElementById('n-prof-user').textContent= member.user;
+    document.getElementById('n-prof-id').textContent  = member.id;
+    document.getElementById('n-prof-phone').textContent= member.phone || '—';
+    document.getElementById('n-prof-wing').textContent = 'Dept ' + member.wing + ' — ' + (DEPTS[member.wing] ? DEPTS[member.wing].dept : '');
+    document.getElementById('n-prof-sub').textContent  = 'Dept ' + member.wing + ' — ' + (DEPTS[member.wing] ? DEPTS[member.wing].dept : '');
+    document.getElementById('n-dash-title').textContent= member.name + ' — Dashboard';
+    document.getElementById('n-dash-sub').textContent  = 'Dept ' + member.wing;
+    document.getElementById('n-pts-sub').textContent   = 'All patients in Dept ' + member.wing;
+    goTo('nur', 'n-dash');
+  }
+}
+
+function showErr(el, msg) { el.textContent = msg; el.style.display = 'block'; }
+
+function showApp(appId) {
+  document.getElementById('login-screen').style.display = 'none';
+  ['sec-app','doc-app','nur-app','adm-app'].forEach(function(id) {
+    document.getElementById(id).style.display = 'none';
+  });
+  document.getElementById(appId).style.display = 'block';
+}
+
+function doLogout() {
+  curUser = null; selectedRole = '';
+  document.getElementById('login-screen').style.display = 'flex';
+  ['sec-app','doc-app','nur-app','adm-app'].forEach(function(id) {
+    document.getElementById(id).style.display = 'none';
+  });
+  document.getElementById('lu').value = '';
+  document.getElementById('lp').value = '';
+  document.getElementById('lerr').style.display = 'none';
+  document.querySelectorAll('.rc').forEach(function(c) { c.classList.remove('sel'); });
+  document.getElementById('sel-tag').classList.remove('vis');
+  document.getElementById('sel-name').textContent = 'Role not selected';
+}
+
+
+// ══════════════════════════════════════
+//  NAVIGATION
+// ══════════════════════════════════════
+
+function goTo(app, pageId, el) {
+  // Update active nav button
+  var nav = document.getElementById(app + '-nav');
+  if (nav) {
+    nav.querySelectorAll('.ni').forEach(function(n) { n.classList.remove('active'); });
+    if (el) {
+      el.classList.add('active');
+    } else {
+      var match = Array.from(nav.querySelectorAll('.ni')).find(function(n) {
+        return (n.getAttribute('onclick') || '').includes(pageId);
+      });
+      if (match) match.classList.add('active');
+    }
+  }
+
+  // Show page
+  document.querySelectorAll('.pg').forEach(function(p) { p.classList.remove('active'); });
+  var pg = document.getElementById(pageId);
+  if (pg) pg.classList.add('active');
+
+  // Refresh page data
+  if (pageId === 's-dash')         refreshSecDash();
+  if (pageId === 's-patients')     renderSecPts();
+  if (pageId === 's-appointments') refreshApptPage();
+  if (pageId === 's-beds')         { renderBeds(); return; }
+  if (pageId === 'd-dash')         refreshDocDash();
+  if (pageId === 'd-appts')        renderDocAppts('');
+  if (pageId === 'd-patients')     renderDocPts('');
+  if (pageId === 'n-dash')         refreshNurDash();
+  if (pageId === 'n-patients')     renderNurPts('');
+  if (pageId === 'a-stats')        renderAdminStats();
+  if (pageId === 'a-staff')        renderStaff('');
+}
+
+
+// ══════════════════════════════════════
+//  SECRETARY — REGISTER PATIENT
+// ══════════════════════════════════════
+
+// Populate available beds for a department into a select element
+function loadBeds(deptSelectId, bedSelectId) {
+  var dept   = document.getElementById(deptSelectId).value;
+  var bedSel = document.getElementById(bedSelectId);
+  if (!dept) { bedSel.innerHTML = '<option value="">— Select department first —</option>'; return; }
+
+  var totalBeds   = DEPTS[dept].beds;
+  var occupiedNums = patients.filter(function(p) { return p.dept === dept && p.status === 'Admitted'; }).map(function(p) { return p.bedNum; });
+  var options = '';
+  for (var i = 1; i <= totalBeds; i++) {
+    if (!occupiedNums.includes(i)) options += '<option value="' + i + '">Bed ' + i + '</option>';
+  }
+  bedSel.innerHTML = options ? '<option value="">— Select Bed —</option>' + options : '<option value="">No beds available</option>';
+}
+
+function toggleReturning() {
+  var isReturning = document.getElementById('rf-returning').checked;
+  document.getElementById('rf-new-section').style.display       = isReturning ? 'none' : 'block';
+  document.getElementById('rf-returning-section').style.display = isReturning ? 'block' : 'none';
+  if (isReturning) {
+    document.getElementById('rf-ret-id').value = '';
+    document.getElementById('rf-ret-selected').style.display = 'none';
+    document.getElementById('rf-readmit-form').style.display = 'none';
+    document.getElementById('rf-ret-search').style.display   = 'block';
+    document.getElementById('rf-ret-list').style.display     = 'block';
+    renderRetPatList('');
+  }
+}
+
+function renderRetPatList(q) {
+  var filter = (q || '').toLowerCase();
+  var list = patients.filter(function(p) {
+    return p.status === 'Discharged' && (!filter || p.name.toLowerCase().includes(filter) || p.id.toLowerCase().includes(filter));
+  });
+  var box = document.getElementById('rf-ret-list');
+  if (!list.length) {
+    box.innerHTML = '<div style="padding:12px 14px;color:var(--text3);font-size:13px;">' + (patients.some(function(p){return p.status==='Discharged';}) ? 'No results.' : 'No discharged patients yet.') + '</div>';
+    return;
+  }
+  box.innerHTML = list.map(function(p) {
+    return '<div onclick="selectRetPat(\'' + p.id + '\')" style="padding:10px 14px;cursor:pointer;border-bottom:1px solid var(--border);font-size:13.5px;" onmouseenter="this.style.background=\'var(--accent-light)\'" onmouseleave="this.style.background=\'\'">'
+      + '<div style="font-weight:600;">' + p.name + ' <code style="font-size:11px;color:var(--text3);">' + p.id + '</code></div>'
+      + '<div style="font-size:11px;color:var(--text3);">Last discharged: ' + (p.dischargedOn || '—') + '</div>'
+      + '</div>';
+  }).join('');
+}
+
+function selectRetPat(pid) {
+  var p = patients.find(function(x) { return x.id === pid; });
+  if (!p) return;
+  document.getElementById('rf-ret-id').value = pid;
+  document.getElementById('rf-ret-selected').textContent = p.name + ' (' + p.id + ')';
+  document.getElementById('rf-ret-selected').style.display = 'block';
+  document.getElementById('rf-ret-list').style.display = 'none';
+  document.getElementById('rf-ret-search').style.display = 'none';
+  document.getElementById('rf-readmit-form').style.display = 'block';
+}
+
+function submitReadmit() {
+  var pid     = document.getElementById('rf-ret-id').value;
+  var p       = patients.find(function(x) { return x.id === pid; });
+  var dept    = document.getElementById('rf-ret-dept').value;
+  var bedNum  = parseInt(document.getElementById('rf-ret-bed').value);
+  var dateRaw = document.getElementById('rf-ret-date').value.trim();
+
+  if (!p) { showToast('Please select a patient.', 'err'); return; }
+  if (!dept || !bedNum) { showToast('Please select a department and bed.', 'err'); return; }
+  if (!/^\d{2}\/\d{2}\/\d{4}$/.test(dateRaw)) { showToast('Admission date must be DD/MM/YYYY.', 'err'); return; }
+
+  var admDate = dateToISO(dateRaw);
+  var newAdm  = { admDate:admDate, dept:dept, bedNum:bedNum, dischargedOn:'', evals:[], tx:[], vitals:[] };
+  if (!p.admissions) p.admissions = [];
+  p.admissions.push(newAdm);
+  p.status = 'Admitted'; p.dept = dept; p.bedNum = bedNum; p.admitted = admDate; p.dischargedOn = '';
+
+  showToast(p.name + ' re-admitted — Dept ' + dept + ' Bed ' + bedNum, 'ok');
+  clearReg(); refreshSecDash(); renderBeds();
+}
+
+// LEGACY LOCAL PAGE
+// The following functions are part of an older local-only version
+// of the app and do not use the current backend API.
+// They are preserved here for reference only.
+function submitReg(e) {
+  e.preventDefault();
+  var fn      = document.getElementById('rf1').value.trim();
+  var ln      = document.getElementById('rf2').value.trim();
+  var dob     = document.getElementById('rf3').value.trim();
+  var gender  = document.getElementById('rf4').value;
+  var blood   = document.getElementById('rf5').value;
+  var phone   = document.getElementById('rf6').value.trim();
+  var addr    = document.getElementById('rf7').value.trim();
+  var dept    = document.getElementById('rf-dept').value;
+  var bedNum  = parseInt(document.getElementById('rf-bed').value);
+  var dateRaw = document.getElementById('rf-date').value.trim();
+
+  // Validation
+  if (!fn || !ln)                               { showToast('First and last name are required.', 'err'); return; }
+  if (!/^\d{2}\/\d{2}\/\d{4}$/.test(dob))       { showToast('Date of birth must be DD/MM/YYYY.', 'err'); return; }
+  if (!gender)                                   { showToast('Please select a gender.', 'err'); return; }
+  if (!blood)                                    { showToast('Please select a blood type.', 'err'); return; }
+  if (!phone)                                    { showToast('Phone number is required.', 'err'); return; }
+  if (!addr)                                     { showToast('Home address is required.', 'err'); return; }
+  if (!dept || !bedNum)                          { showToast('Please select a department and bed.', 'err'); return; }
+  if (!/^\d{2}\/\d{2}\/\d{4}$/.test(dateRaw))   { showToast('Admission date must be DD/MM/YYYY.', 'err'); return; }
+
+  var admDate = dateToISO(dateRaw);
+  var id      = 'PT-' + String(ptCtr++).padStart(3, '0');
+  var firstAdm = { admDate:admDate, dept:dept, bedNum:bedNum, dischargedOn:'', evals:[], tx:[], vitals:[] };
+
+  patients.push({
+    id: id, name: fn + ' ' + ln,
+    dob: dob, gender: gender, blood: blood, phone: phone, address: addr,
+    allergies:  document.getElementById('rf8').value || 'None',
+    conditions: document.getElementById('rf9').value || 'None',
+    status: 'Admitted', dept: dept, bedNum: bedNum, admitted: admDate, dischargedOn: '',
+    admissions: [firstAdm]
+  });
+
+  showToast('Patient ' + fn + ' ' + ln + ' registered as ' + id, 'ok');
+  clearReg(); refreshSecDash(); renderBeds();
+}
+
+function clearReg() {
+  ['rf1','rf2','rf3','rf4','rf5','rf6','rf7','rf8','rf9','rf-date','rf-dept'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  document.getElementById('rf-bed').innerHTML = '<option value="">— Select department first —</option>';
+  var cb = document.getElementById('rf-returning');
+  if (cb) { cb.checked = false; toggleReturning(); }
+}
+
+
+// ══════════════════════════════════════
+//  SECRETARY — PATIENT TABLE
+// ══════════════════════════════════════
+
+function refreshSecDash() {
+  var admitted = patients.filter(function(p) { return p.status === 'Admitted'; });
+  document.getElementById('s-n-total').textContent = patients.length;
+  document.getElementById('s-n-adm').textContent   = admitted.length;
+
+  // Recent patients list
+  var recent = patients.slice(-4).reverse();
+  document.getElementById('s-dash-pts').innerHTML = recent.length
+    ? recent.map(function(p) {
+        return '<div class="row"><div class="row-i"><div class="row-t">' + p.name + ' <code style="font-size:11px;color:var(--text3);">' + p.id + '</code></div>'
+          + '<div class="row-s">Dept ' + p.dept + ' — Bed ' + (p.bedNum || '—') + '</div></div>'
+          + '<span class="badge ' + (p.status === 'Admitted' ? 'b-g' : 'b-gr') + '">' + p.status + '</span></div>';
+      }).join('')
+    : '<div style="text-align:center;padding:20px;color:var(--text3);font-size:13px;">No patients yet.</div>';
+
+  // Bed summary
+  var total = Object.values(DEPTS).reduce(function(a, d) { return a + d.beds; }, 0);
+  var occ   = admitted.length;
+  document.getElementById('s-dash-rooms').innerHTML =
+    '<div style="display:flex;gap:10px;flex-wrap:wrap;">'
+    + '<div style="flex:1;background:var(--danger-light);border:1.5px solid var(--danger);border-radius:10px;padding:14px;text-align:center;"><div style="font-family:\'DM Serif Display\',serif;font-size:26px;color:var(--danger);">' + occ + '</div><div style="font-size:12px;color:var(--danger);font-weight:600;">Occupied</div></div>'
+    + '<div style="flex:1;background:var(--success-light);border:1.5px solid var(--success);border-radius:10px;padding:14px;text-align:center;"><div style="font-family:\'DM Serif Display\',serif;font-size:26px;color:var(--success);">' + (total - occ) + '</div><div style="font-size:12px;color:var(--success);font-weight:600;">Available</div></div>'
+    + '<div style="flex:1;background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;padding:14px;text-align:center;"><div style="font-family:\'DM Serif Display\',serif;font-size:26px;color:var(--text);">' + total + '</div><div style="font-size:12px;color:var(--text2);font-weight:600;">Total Beds</div></div>'
+    + '</div>';
+}
+
+function renderSecPts() {
+  var q    = (document.getElementById('s-search') ? document.getElementById('s-search').value : '').toLowerCase();
+  var list = patients.filter(function(p) { return !q || p.name.toLowerCase().includes(q) || p.id.toLowerCase().includes(q); });
+  var tb   = document.getElementById('s-ptbody');
+  if (!list.length) {
+    tb.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--text3);padding:24px;">' + (patients.length ? 'No results.' : 'No patients registered yet.') + '</td></tr>';
+    return;
+  }
+  tb.innerHTML = list.map(function(p) {
+    return '<tr>'
+      + '<td><code style="font-size:11px;color:var(--text3);">' + p.id + '</code></td>'
+      + '<td><b>' + p.name + '</b></td>'
+      + '<td>' + (p.dept !== '—' ? 'Dept ' + p.dept : '—') + '</td>'
+      + '<td>' + (p.bedNum && p.bedNum !== '—' ? 'Bed ' + p.bedNum : '—') + '</td>'
+      + '<td>' + p.admitted + '</td>'
+      + '<td><span class="badge ' + (p.status === 'Admitted' ? 'b-g' : 'b-gr') + '">' + p.status + '</span></td>'
+      + '<td><button class="btn btn-o sm" onclick="openFile(\'' + p.id + '\',\'sec\',\'view\')">View File</button></td>'
+      + '</tr>';
+  }).join('');
+}
+
+
+// ══════════════════════════════════════
+//  SECRETARY — APPOINTMENTS
+// ══════════════════════════════════════
+
+function refreshApptPage() {
+  clearPatSel();
+  renderApptPatList('');
+
+  // Fill doctors dropdown
+  var docSel = document.getElementById('appt-doc');
+  docSel.innerHTML = '<option value="">— Select Doctor —</option>'
+    + staff.filter(function(s) { return s.role === 'doctor'; }).map(function(s) {
+        return '<option value="' + s.user + '">' + s.name + ' — Dept ' + s.wing + '</option>';
+      }).join('');
+
+  // Fill hours dropdowns (00:00 to 23:00)
+  var hourOptions = '';
+  for (var h = 0; h < 24; h++) {
+    var v = (h < 10 ? '0' : '') + h + ':00';
+    hourOptions += '<option value="' + v + '">' + v + '</option>';
+  }
+  document.getElementById('appt-from').innerHTML = hourOptions;
+  document.getElementById('appt-to').innerHTML   = hourOptions;
+}
+
+function renderApptPatList(q) {
+  var filter = (q || '').toLowerCase();
+  var list   = patients.filter(function(p) { return !filter || p.name.toLowerCase().includes(filter) || p.id.toLowerCase().includes(filter); });
+  var box    = document.getElementById('appt-pat-list');
+  if (!list.length) { box.innerHTML = '<div style="padding:12px 14px;color:var(--text3);font-size:13px;">No patients found.</div>'; return; }
+  box.innerHTML = list.map(function(p) {
+    return '<div onclick="selectApptPat(\'' + p.id + '\',\'' + p.name.replace(/'/g,"\\'") + ' (' + p.id + ')\')" '
+      + 'style="padding:10px 14px;cursor:pointer;border-bottom:1px solid var(--border);font-size:13.5px;" '
+      + 'onmouseenter="this.style.background=\'var(--accent-light)\'" onmouseleave="this.style.background=\'\'">'
+      + '<div style="font-weight:600;">' + p.name + '</div>'
+      + '<div style="font-size:11px;color:var(--text3);">' + p.id + ' — Dept ' + p.dept + '</div>'
+      + '</div>';
+  }).join('');
+}
+
+function selectApptPat(id, label) {
+  document.getElementById('appt-pat').value = id;
+  document.getElementById('appt-selected-name').textContent = label;
+  document.getElementById('appt-selected-pat').style.display = 'flex';
+  document.getElementById('appt-pat-picker').style.display   = 'none';
+}
+
+function clearPatSel() {
+  document.getElementById('appt-pat').value = '';
+  document.getElementById('appt-selected-pat').style.display = 'none';
+  document.getElementById('appt-pat-picker').style.display   = 'block';
+  document.getElementById('appt-pat-search').value = '';
+  renderApptPatList('');
+}
+
+function scheduleAppt(e) {
+  e.preventDefault();
+  var patId = document.getElementById('appt-pat').value;
+  var docVal= document.getElementById('appt-doc').value;
+  var date  = document.getElementById('appt-date').value;
+  var from  = document.getElementById('appt-from').value;
+  var to    = document.getElementById('appt-to').value;
+  var type  = document.getElementById('appt-type').value;
+
+  if (!patId || !docVal || !date) { showToast('Please select a patient, doctor and date.', 'err'); return; }
+
+  var p = patients.find(function(x) { return x.id === patId; });
+  var d = staff.find(function(s) { return s.user === docVal; });
+  appointments.push({ patId:patId, patName:p.name, docUser:docVal, docName:d.name, date:date, from:from, to:to, type:type });
+
+  showToast('Appointment scheduled: ' + p.name + ' — ' + d.name + ' on ' + date, 'ok');
+  updSched();
+}
+
+function updSched() {
+  var date  = document.getElementById('appt-date').value;
+  var panel = document.getElementById('sched-panel');
+  var tit   = document.getElementById('sched-title');
+  var bdg   = document.getElementById('sched-badge');
+  if (!date) return;
+
+  var list = appointments.filter(function(a) { return a.date === date; });
+  tit.textContent = 'Appointments — ' + new Date(date).toLocaleDateString('en-GB', {weekday:'short',day:'numeric',month:'short',year:'numeric'});
+  bdg.className   = list.length ? 'badge b-b' : '';
+  bdg.textContent = list.length ? list.length + ' appt' + (list.length > 1 ? 's' : '') : '';
+  panel.innerHTML = list.length
+    ? list.map(function(a) {
+        return '<div class="row"><div class="row-d">' + a.from + '–' + a.to + '</div><div class="row-i"><div class="row-t">' + a.patName + '</div><div class="row-s">' + a.docName + ' — ' + a.type + '</div></div></div>';
+      }).join('')
+    : '<div style="text-align:center;padding:24px;color:var(--text3);font-size:13px;">No appointments on this date.</div>';
+}
+
+
+// ══════════════════════════════════════
+//  BEDS
+// ══════════════════════════════════════
+
+function renderBeds() {
+  Object.keys(DEPTS).forEach(function(dk) {
+    var div = document.getElementById('bd-' + dk.toLowerCase());
+    if (!div) return;
+    var occupiedNums = patients.filter(function(p) { return p.dept === dk && p.status === 'Admitted'; }).map(function(p) { return p.bedNum; });
+    var html = '<div class="rg">';
+    for (var i = 1; i <= DEPTS[dk].beds; i++) {
+      var isFull = occupiedNums.includes(i);
+      html += '<div class="rcd ' + (isFull ? 'full' : 'free') + '">'
+        + '<div class="rnum">Bed ' + i + '</div>'
+        + '<div style="font-size:12px;font-weight:600;color:var(--text2);">' + (isFull ? 'Occupied' : 'Available') + '</div>'
+        + '</div>';
+    }
+    div.innerHTML = html + '</div>';
+  });
+}
+
+function switchDept(el, id) {
+  document.querySelectorAll('.tab-bar .tab').forEach(function(t) { t.classList.remove('active'); });
+  el.classList.add('active');
+  ['bd-a','bd-b','bd-c','bd-d','bd-e','bd-f'].forEach(function(w) {
+    var e = document.getElementById(w);
+    if (e) e.style.display = 'none';
+  });
+  var target = document.getElementById(id);
+  if (target) target.style.display = 'block';
+}
+
+
+// ══════════════════════════════════════
+//  PATIENT FILE MODAL
+// ══════════════════════════════════════
+
+function openFile(id, role, mode) {
+  var p = patients.find(function(x) { return x.id === id; });
+  if (!p) { showToast('Patient not found.', 'err'); return; }
+
+  var html = '';
+
+  if (role === 'sec') {
+    if (mode === 'view') {
+      // Build admission history
+      var histHtml = (p.admissions || []).slice().reverse().map(function(adm, i) {
+        var n = (p.admissions.length - i);
+        var active = !adm.dischargedOn;
+        return '<div style="padding:9px 12px;border:1px solid var(--border);border-radius:8px;margin-bottom:7px;font-size:13px;">'
+          + '<span style="font-weight:600;">Visit ' + n + '</span> — ' + (adm.admDate || '—')
+          + (adm.dischargedOn ? ' to ' + adm.dischargedOn : ' <span class="badge b-g" style="font-size:10px;">Active</span>')
+          + '</div>';
+      }).join('') || '<div style="color:var(--text3);font-size:13px;padding:4px;">No history.</div>';
+
+      html = '<div class="fs"><div class="fst">Personal Information</div>'
+        + row('Full Name', '<b>' + p.name + '</b> <code style="font-size:11px;">' + p.id + '</code>')
+        + row('Date of Birth', p.dob) + row('Gender', p.gender) + row('Blood Type', p.blood)
+        + row('Phone', p.phone) + row('Address', p.address)
+        + row('Allergies', p.allergies) + row('Conditions', p.conditions) + '</div>'
+        + '<div class="fs"><div class="fst">Admission Status</div>'
+        + row('Status', '<span class="badge ' + (p.status === 'Admitted' ? 'b-g' : 'b-gr') + '">' + p.status + '</span>')
+        + (p.status === 'Admitted' ? row('Dept / Bed', 'Dept ' + p.dept + ' — Bed ' + p.bedNum) + row('Admitted On', p.admitted) : '')
+        + '</div>'
+        + '<div class="fs"><div class="fst">Admission History</div>' + histHtml + '</div>'
+        + '<div style="display:flex;gap:10px;justify-content:flex-end;margin-top:14px;">'
+        + '<button class="btn btn-p sm" onclick="openFile(\'' + id + '\',\'sec\',\'edit\')">Edit Patient Info</button>'
+        + (p.status === 'Admitted' ? '<button class="btn btn-d sm" onclick="document.getElementById(\'dis-panel-' + id + '\').style.display=\'block\'">Discharge Patient</button>' : '')
+        + '</div>'
+        + '<div id="dis-panel-' + id + '" style="display:none;margin-top:16px;padding:16px;border:1.5px solid var(--danger);border-radius:10px;background:var(--danger-light);">'
+        + '<div style="font-weight:700;color:var(--danger);margin-bottom:12px;">Discharge ' + p.name + '</div>'
+        + '<div class="fgr"><label>Discharge Date</label><input type="text" id="dp-date-' + id + '" placeholder="DD/MM/YYYY" maxlength="10" oninput="fmtDate(this)"/></div>'
+        + '<div style="display:flex;gap:8px;margin-top:12px;">'
+        + '<button type="button" class="btn btn-o sm" onclick="document.getElementById(\'dis-panel-' + id + '\').style.display=\'none\'">Cancel</button>'
+        + '<button type="button" class="btn btn-d sm" onclick="confirmDischarge(\'' + id + '\')">Confirm Discharge</button>'
+        + '</div></div>';
+    } else {
+      // Edit mode
+      var bloodOpts = ['A+','A-','B+','B-','AB+','AB-','O+','O-'].map(function(b) {
+        return '<option ' + (b === p.blood ? 'selected' : '') + '>' + b + '</option>';
+      }).join('');
+      html = '<div class="fg">'
+        + '<div class="fgr"><label>First Name</label><input id="ef-fn" value="' + p.name.split(' ')[0] + '"/></div>'
+        + '<div class="fgr"><label>Last Name</label><input id="ef-ln" value="' + p.name.split(' ').slice(1).join(' ') + '"/></div>'
+        + '<div class="fgr"><label>Phone</label><input id="ef-ph" value="' + p.phone + '"/></div>'
+        + '<div class="fgr"><label>Blood Type</label><select id="ef-bl">' + bloodOpts + '</select></div>'
+        + '<div class="fgr full"><label>Address</label><input id="ef-ad" value="' + p.address + '"/></div>'
+        + '<div class="fgr"><label>Allergies</label><input id="ef-al" value="' + p.allergies + '"/></div>'
+        + '<div class="fgr"><label>Conditions</label><input id="ef-co" value="' + p.conditions + '"/></div>'
+        + '</div>'
+        + '<div class="fa"><button type="button" class="btn btn-o sm" onclick="openFile(\'' + id + '\',\'sec\',\'view\')">Cancel</button><button type="button" class="btn btn-p sm" onclick="saveFile(\'' + id + '\')">Save</button></div>';
+    }
+
+  } else if (role === 'doc' || role === 'nur') {
+    var isDoc = (role === 'doc');
+
+    // Build admission history with evals, prescriptions, vitals
+    var admHtml = '';
+    var adms = p.admissions || [];
+    adms.slice().reverse().forEach(function(adm, revI) {
+      var admIdx  = adms.length - 1 - revI;
+      var visitN  = adms.length - revI;
+      var active  = !adm.dischargedOn;
+      var border  = active ? 'var(--accent)' : 'var(--border)';
+      var bg      = active ? 'var(--accent-light)' : 'var(--surface2)';
+      var col     = active ? 'var(--accent)' : 'var(--text2)';
+      var badge   = active ? '<span class="badge b-g" style="margin-left:6px;font-size:10px;">Active</span>' : '';
+      var dateRange = adm.admDate + (adm.dischargedOn ? ' — ' + adm.dischargedOn : '');
+
+      admHtml += '<details ' + (active ? 'open' : '') + ' style="border:1.5px solid ' + border + ';border-radius:10px;margin-bottom:14px;overflow:hidden;">'
+        + '<summary style="padding:12px 16px;font-weight:700;font-size:13.5px;cursor:pointer;background:' + bg + ';color:' + col + ';display:flex;align-items:center;justify-content:space-between;">'
+        + '<span>Visit ' + visitN + badge + '</span>'
+        + '<span style="font-size:12px;font-weight:400;color:var(--text3);">' + dateRange + '</span>'
+        + '</summary><div style="padding:16px;">';
+
+      // Evaluations
+      admHtml += '<div class="fs"><div class="fst">Clinical Evaluations</div>';
+      if (adm.evals && adm.evals.length) {
+        adm.evals.slice().sort(function(a,b){ var ka=(a.date||a.datetime||'')+(a.time||''); var kb=(b.date||b.datetime||'')+(b.time||''); return kb.localeCompare(ka); }).forEach(function(ev) {
+          var dt = (ev.date ? ev.date + ' ' : '') + (ev.time || ev.datetime || '');
+          admHtml += '<div style="border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:8px;">'
+            + '<div style="font-size:11px;color:var(--text3);margin-bottom:6px;font-weight:600;">' + (dt || '—') + ' — by ' + (ev.by || '—') + ' · <span class="badge b-b" style="font-size:10px;">' + (ev.state || 'pending') + '</span></div>'
+            + '<div style="font-size:13.5px;white-space:pre-wrap;">' + (ev.notes || ev.obs || '') + '</div></div>';
+        });
+      } else { admHtml += '<div style="color:var(--text3);font-size:13px;padding:8px;">No evaluations for this admission.</div>'; }
+      admHtml += '</div>';
+
+      // Prescriptions
+      admHtml += '<div class="fs"><div class="fst">Prescriptions &amp; Care</div>';
+      if (adm.tx && adm.tx.length) {
+        adm.tx.slice().sort(function(a,b){ var ka=(a.prescribedAt||a.date||''); var kb=(b.prescribedAt||b.date||''); return kb.localeCompare(ka); }).forEach(function(t, revTi) {
+          var txIdx = adm.tx.indexOf(t);
+          admHtml += '<div style="border:1.5px solid var(--border);border-radius:10px;padding:14px;margin-bottom:12px;background:var(--surface);">'
+            + '<div style="margin-bottom:8px;"><span style="font-weight:700;font-size:14px;">' + t.med + ' ' + (t.dose||'') + '</span>'
+            + ' <span style="font-size:12px;color:var(--text3);margin-left:6px;">' + (t.freqLabel||t.freq||'') + ' — ' + (t.durDays||t.dur||'') + ' day(s)</span></div>'
+            + '<div style="font-size:11px;color:var(--text3);margin-bottom:8px;">Prescribed by ' + t.by + ' on ' + ((t.prescribedAt && t.prescribedAt.indexOf('T') !== -1) ? new Date(t.prescribedAt).toLocaleString('en-GB', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' }) : (t.prescribedAt||t.date||'—')) + '</div>';
+          if (t.doses && t.doses.length) {
+            admHtml += '<div style="display:flex;flex-direction:column;gap:4px;">';
+            t.doses.forEach(function(d, di) {
+              var doneStyle = 'background:' + (d.done ? 'rgba(26,122,74,.08)' : 'var(--surface2)') + ';border:1px solid ' + (d.done ? 'var(--success)' : 'var(--border)') + ';';
+              var checkStyle = 'width:22px;height:22px;border-radius:5px;border:2px solid ' + (d.done ? 'var(--success)' : 'var(--border)') + ';background:' + (d.done ? 'var(--success)' : 'transparent') + ';display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#fff;font-size:13px;';
+              if (isDoc || adm.dischargedOn) {
+                // Doctor or discharged: read-only
+                admHtml += '<div style="display:flex;align-items:center;gap:10px;padding:6px 10px;border-radius:7px;background:var(--surface2);">'
+                  + '<div style="' + checkStyle + '">' + (d.done ? 'v' : '') + '</div>'
+                  + '<div style="flex:1;font-size:12px;"><b>' + d.label + '</b> — ' + d.datetime + '</div>'
+                  + '</div>';
+              } else {
+                // Nurse: interactive checkbox
+                admHtml += '<div style="display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:7px;' + doneStyle + '">'
+                  + '<div style="' + checkStyle + 'cursor:pointer;" data-td="' + id + '" data-ta="' + admIdx + '" data-tx="' + txIdx + '" data-di="' + di + '">' + (d.done ? 'v' : '') + '</div>'
+                  + '<div style="flex:1;"><span style="font-size:12px;font-weight:600;color:var(--text2);">' + d.label + '</span> <span style="font-size:12px;color:var(--text3);">' + d.datetime + '</span></div>'
+                  + (d.done ? '<span style="font-size:11px;color:var(--success);font-weight:600;">Done — ' + d.doneBy + '</span>' : '')
+                  + '</div>';
+              }
+            });
+            admHtml += '</div>';
+          }
+          admHtml += '</div>';
+        });
+      } else { admHtml += '<div style="color:var(--text3);font-size:13px;padding:8px;">No prescriptions for this admission.</div>'; }
+      admHtml += '</div>';
+
+      // Vitals
+      admHtml += '<div class="fs"><div class="fst">Vital Signs</div>';
+      if (adm.vitals && adm.vitals.length) {
+        adm.vitals.slice().sort(function(a,b){ var ka=(a.date||'')+(a.time||a.datetime||''); var kb=(b.date||'')+(b.time||b.datetime||''); return kb.localeCompare(ka); }).forEach(function(v) {
+          var dt = (v.date ? v.date + ' ' : '') + (v.time || v.datetime || '—');
+          admHtml += '<div class="row"><div class="row-i"><div class="row-t">' + v.nurse + '</div>'
+            + '<div class="row-s">HR: ' + v.hr + ' bpm | BP: ' + v.bp + ' | Temp: ' + v.temp + '°C | SpO2: ' + v.spo2 + '%</div></div>'
+            + '<div style="font-size:11px;color:var(--text3);">' + dt + '</div></div>';
+        });
+      } else { admHtml += '<div style="color:var(--text3);font-size:13px;padding:8px;">No vitals for this admission.</div>'; }
+      admHtml += '</div>';
+
+      admHtml += '</div></details>';
+    });
+    if (!admHtml) admHtml = '<div style="color:var(--text3);padding:8px;">No admission history.</div>';
+
+    html = '<div class="tab-bar" style="margin-bottom:14px;">'
+      + '<div class="tab active" onclick="switchFT(this,\'ft-main\')">Patient File</div>'
+      + (isDoc ? '<div class="tab" onclick="switchFT(this,\'ft-eval\')">Write Evaluation</div><div class="tab" onclick="switchFT(this,\'ft-tx\')">Prescribe Treatment</div>' : '')
+      + (!isDoc ? '<div class="tab" onclick="switchFT(this,\'ft-vitals\')">Record Vital Signs</div>' : '')
+      + '</div>'
+      + '<div id="ft-main">'
+      + '<div class="fs"><div class="fst">Patient Information</div>'
+      + row('Name', '<b>' + p.name + '</b> <code style="font-size:11px;">' + p.id + '</code>')
+      + row('DOB / Gender', p.dob + ' — ' + p.gender)
+      + row('Blood Type', p.blood) + row('Allergies', p.allergies) + row('Conditions', p.conditions)
+      + row('Department / Bed', 'Dept ' + p.dept + ' — Bed ' + (p.bedNum || '—'))
+      + row('Admission Date', p.admitted)
+      + (p.dischargedOn ? row('Discharge Date', p.dischargedOn) : '')
+      + '</div>'
+      + '<div class="fs"><div class="fst">Admission History</div>' + admHtml + '</div>'
+      + '</div>'
+
+      + (isDoc
+        ? '<div id="ft-eval" style="display:none;">'
+          + '<div class="fg"><div class="fgr"><label>Doctor Name *</label><input id="ev-by" placeholder="Enter your full name"/></div>'
+          + '<div class="fgr"><label>Patient State</label><select id="ev-state"><option>Stable</option><option>Improving</option><option>Deteriorating</option><option>Critical</option></select></div>'
+          + '<div class="fgr full"><label>Observations *</label><textarea id="ev-obs" style="min-height:120px;" placeholder="Clinical observations…"></textarea></div></div>'
+          + '<div class="fa"><button type="button" class="btn btn-p sm" onclick="saveEval(\'' + id + '\')">Save Evaluation</button></div></div>'
+
+          + '<div id="ft-tx" style="display:none;">'
+          + '<div class="fg"><div class="fgr"><label>Doctor Name *</label><input id="tx-by" placeholder="Enter your full name"/></div>'
+          + '<div class="fgr"><label>Medication *</label><input id="tx-med" placeholder="e.g. Amoxicillin"/></div>'
+          + '<div class="fgr"><label>Dosage *</label><input id="tx-dose" placeholder="e.g. 500 mg"/></div>'
+          + '<div class="fgr"><label>Frequency *</label><select id="tx-freq"><option value="once_daily">Once daily (every 24h)</option><option value="twice_daily">Twice daily (every 12h)</option><option value="three_daily">Three times daily (every 8h)</option><option value="four_daily">Four times daily (every 6h)</option><option value="every_8h">Every 8 hours</option><option value="every_6h">Every 6 hours</option><option value="every_4h">Every 4 hours</option><option value="once_only">Once only (single dose)</option></select></div>'
+          + '<div class="fgr"><label>First Dose Time</label><input type="time" id="tx-start" value="08:00"/></div>'
+          + '<div class="fgr"><label>Duration (days) *</label><input type="number" id="tx-dur" placeholder="e.g. 3" min="1" max="30"/></div>'
+          + '</div><div class="fa"><button type="button" class="btn btn-p sm" onclick="saveTx(\'' + id + '\')">Save Prescription</button></div></div>'
+        : '')
+
+      + (!isDoc
+        ? '<div id="ft-vitals" style="display:none;">'
+          + '<div class="fg"><div class="fgr"><label>Nurse Name *</label><input id="vt-nurse" placeholder="Enter your full name"/></div>'
+          + '<div class="fgr"><label>Heart Rate (bpm) *</label><input type="text" inputmode="numeric" id="vt-hr" placeholder="e.g. 78"/></div>'
+          + '<div class="fgr"><label>Blood Pressure *</label><input id="vt-bp" placeholder="e.g. 120/80"/></div>'
+          + '<div class="fgr"><label>Temperature (°C) *</label><input type="text" inputmode="decimal" id="vt-temp" placeholder="e.g. 37.2"/></div>'
+          + '<div class="fgr"><label>SpO2 (%) *</label><input type="text" inputmode="numeric" id="vt-spo2" placeholder="e.g. 98"/></div>'
+          + '</div><div class="fa"><button type="button" class="btn btn-p sm" onclick="saveVitals(\'' + id + '\')">Save Vitals</button></div></div>'
+        : '');
+  }
+
+  document.getElementById('file-mo-title').textContent = (role === 'sec' ? 'Patient File' : 'Medical File') + ' — ' + p.name;
+  document.getElementById('file-mo-body').innerHTML = html;
+  document.getElementById('file-mo').classList.add('open');
+
+  // Delegate dose checkbox clicks (nurse only)
+  document.getElementById('file-mo-body').onclick = function(e) {
+    var btn = e.target.closest('[data-td]');
+    if (btn) toggleDose(btn.dataset.td, parseInt(btn.dataset.ta), parseInt(btn.dataset.tx), parseInt(btn.dataset.di));
+  };
+}
+
+// Helper: build a .fr row
+function row(label, value) {
+  return '<div class="fr"><div class="fl">' + label + '</div><div class="fv">' + value + '</div></div>';
+}
+
+function switchFT(el, show) {
+  var body = document.getElementById('file-mo-body');
+  body.querySelectorAll('.tab-bar .tab').forEach(function(t) { t.classList.remove('active'); });
+  if (el) el.classList.add('active');
+  body.querySelectorAll('[id^="ft-"]').forEach(function(d) { d.style.display = 'none'; });
+  var target = document.getElementById(show);
+  if (target) target.style.display = 'block';
+}
+
+function saveFile(id) {
+  var p = patients.find(function(x) { return x.id === id; });
+  if (!p) return;
+  p.name       = document.getElementById('ef-fn').value.trim() + ' ' + document.getElementById('ef-ln').value.trim();
+  p.phone      = document.getElementById('ef-ph').value;
+  p.blood      = document.getElementById('ef-bl').value;
+  p.address    = document.getElementById('ef-ad').value;
+  p.allergies  = document.getElementById('ef-al').value;
+  p.conditions = document.getElementById('ef-co').value;
+  showToast('Patient information updated.', 'ok');
+  refreshSecDash(); renderBeds();
+  openFile(id, 'sec', 'view');
+}
+
+function confirmDischarge(id) {
+  var p   = patients.find(function(x) { return x.id === id; });
+  if (!p) return;
+  var raw = document.getElementById('dp-date-' + id) ? document.getElementById('dp-date-' + id).value : '';
+  var date = new Date().toISOString().slice(0, 10);
+  if (/^\d{2}\/\d{2}\/\d{4}$/.test(raw)) date = dateToISO(raw);
+  if (p.admissions && p.admissions.length) p.admissions[p.admissions.length - 1].dischargedOn = date;
+  p.status = 'Discharged'; p.dischargedOn = date; p.bedNum = '—'; p.dept = '—';
+  showToast(p.name + ' discharged on ' + date + '.', 'ok');
+  closeMo('file-mo'); refreshSecDash(); renderBeds();
+}
+
+function saveEval(id) {
+  var p   = patients.find(function(x) { return x.id === id; });
+  var by  = document.getElementById('ev-by').value.trim();
+  var obs = document.getElementById('ev-obs').value.trim();
+  if (!by || !obs) { showToast('Doctor name and observations are required.', 'err'); return; }
+  var curAdm = p.admissions && p.admissions[p.admissions.length - 1];
+  if (curAdm) {
+    var _now = new Date();
+    var _date = _now.toISOString().slice(0,10);
+    var _time = _now.getHours().toString().padStart(2,'0') + ':' + _now.getMinutes().toString().padStart(2,'0');
+    curAdm.evals.push({ by:by, date:_date, time:_time, state:document.getElementById('ev-state').value, obs:obs, notes:obs });
+  }
+  showToast('Evaluation saved.', 'ok');
+  openFile(id, 'doc', '');
+}
+
+// Frequency map for prescriptions
+var FREQ_MAP = {
+  once_daily:  { label:'Once daily',         hours:24 },
+  twice_daily: { label:'Twice daily',        hours:12 },
+  three_daily: { label:'Three times daily',  hours:8  },
+  four_daily:  { label:'Four times daily',   hours:6  },
+  every_8h:    { label:'Every 8 hours',      hours:8  },
+  every_6h:    { label:'Every 6 hours',      hours:6  },
+  every_4h:    { label:'Every 4 hours',      hours:4  },
+  once_only:   { label:'Once only',          hours:0  }
+};
+
+function generateDoses(startDate, startTime, freqKey, durationDays) {
+  var fm = FREQ_MAP[freqKey];
+  if (!fm) return [];
+  if (freqKey === 'once_only') return [{ datetime:startDate + ' at ' + startTime, label:'Single dose', done:false, doneBy:'' }];
+  var doses = [];
+  var cur = new Date(startDate + 'T' + startTime + ':00');
+  var end = new Date(cur.getTime() + parseInt(durationDays) * 86400000);
+  var idx = 1;
+  while (cur < end) {
+    var d = cur.toLocaleDateString('en-GB', { weekday:'short', day:'2-digit', month:'short' });
+    var t = cur.toTimeString().slice(0, 5);
+    doses.push({ datetime:d + ' at ' + t, label:'Dose ' + idx, done:false, doneBy:'' });
+    cur = new Date(cur.getTime() + fm.hours * 3600000);
+    idx++;
+  }
+  return doses;
+}
+
+function saveTx(id) {
+  var p    = patients.find(function(x) { return x.id === id; });
+  var by   = document.getElementById('tx-by').value.trim();
+  var med  = document.getElementById('tx-med').value.trim();
+  var dur  = document.getElementById('tx-dur').value;
+  var freq = document.getElementById('tx-freq').value;
+  var start= document.getElementById('tx-start').value || '08:00';
+  if (!by || !med || !dur) { showToast('Doctor name, medication and duration are required.', 'err'); return; }
+  var fm    = FREQ_MAP[freq];
+  var today = new Date().toISOString().slice(0, 10);
+  var doses = generateDoses(today, start, freq, dur);
+  var entry = {
+    id: 'tx-' + Date.now(), med:med, dose:document.getElementById('tx-dose').value,
+    prescribedAt:new Date().toISOString(), date:new Date().toLocaleDateString('en-GB'),
+    freqKey:freq, freqLabel:fm ? fm.label : freq, durDays:dur, by:by, startTime:start, doses:doses
+  };
+  var curAdm = p.admissions && p.admissions[p.admissions.length - 1];
+  if (curAdm) curAdm.tx.push(entry);
+  showToast(med + ' prescribed — ' + doses.length + ' dose(s) over ' + dur + ' day(s).', 'ok');
+  openFile(id, 'doc', '');
+}
+
+function saveVitals(id) {
+  var p     = patients.find(function(x) { return x.id === id; });
+  var nurse = document.getElementById('vt-nurse').value.trim();
+  var hr    = document.getElementById('vt-hr').value.trim();
+  var bp    = document.getElementById('vt-bp').value.trim();
+  var temp  = document.getElementById('vt-temp').value.trim();
+  var spo2  = document.getElementById('vt-spo2').value.trim();
+  if (!nurse) { showToast('Nurse name is required.', 'err'); return; }
+  if (!hr)    { showToast('Heart rate is required.', 'err'); return; }
+  if (!bp)    { showToast('Blood pressure is required.', 'err'); return; }
+  if (!temp)  { showToast('Temperature is required.', 'err'); return; }
+  if (!spo2)  { showToast('SpO2 is required.', 'err'); return; }
+  var curAdm = p.admissions && p.admissions[p.admissions.length - 1];
+  if (curAdm) curAdm.vitals.push({ nurse:nurse, hr:hr, bp:bp, temp:temp, spo2:spo2, time:now() });
+  showToast('Vital signs recorded.', 'ok');
+  openFile(id, 'nur', '');
+}
+
+function toggleDose(patId, admIdx, txIdx, doseIdx) {
+  var p    = patients.find(function(x) { return x.id === patId; });
+  if (!p) return;
+  var adm  = p.admissions && p.admissions[admIdx];
+  if (!adm || !adm.tx[txIdx] || !adm.tx[txIdx].doses[doseIdx]) return;
+  var dose = adm.tx[txIdx].doses[doseIdx];
+  dose.done   = !dose.done;
+  dose.doneBy = dose.done ? (curUser ? curUser.name : 'Nurse') : '';
+  openFile(patId, 'nur', '');
+}
+
+
+// ══════════════════════════════════════
+//  DOCTOR
+// ══════════════════════════════════════
+
+function refreshDocDash() {
+  var mine = patients.filter(function(p) { return p.dept === curUser.wing && p.status === 'Admitted'; });
+  var myA  = appointments.filter(function(a) { return a.docUser === curUser.user; });
+  document.getElementById('d-n-pts').textContent = mine.length;
+
+  var today    = new Date().toISOString().slice(0, 10);
+  var upcoming = myA.filter(function(a) { return a.date >= today; }).sort(function(a, b) { return a.date.localeCompare(b.date) || a.from.localeCompare(b.from); }).slice(0, 5);
+  document.getElementById('d-dash-appts').innerHTML = upcoming.length
+    ? upcoming.map(function(a) {
+        return '<div class="row"><div class="row-d">' + (a.date === today ? 'Today' : a.date) + '</div><div class="row-i"><div class="row-t">' + a.patName + '</div><div class="row-s">' + a.from + '–' + a.to + ' — ' + a.type + '</div></div></div>';
+      }).join('')
+    : '<div style="text-align:center;padding:20px;color:var(--text3);font-size:13px;">No upcoming appointments.</div>';
+}
+
+function renderDocAppts(q) {
+  var filter  = (q || '').toLowerCase();
+  var today   = new Date().toISOString().slice(0, 10);
+  var myAppts = appointments.filter(function(a) { return a.docUser === curUser.user && (!filter || a.patName.toLowerCase().includes(filter)); });
+
+  // Sort: upcoming first (chronological), then past (reverse chronological)
+  myAppts.sort(function(a, b) {
+    var aPast = a.date < today, bPast = b.date < today;
+    if (aPast === bPast) return aPast ? b.date.localeCompare(a.date) : a.date.localeCompare(b.date) || a.from.localeCompare(b.from);
+    return aPast ? 1 : -1;
+  });
+
+  var tb = document.getElementById('d-appts-body');
+  if (!myAppts.length) { tb.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--text3);padding:24px;">No appointments yet.</td></tr>'; return; }
+
+  var lastGroup = '';
+  tb.innerHTML = myAppts.map(function(a) {
+    var p     = patients.find(function(x) { return x.id === a.patId; });
+    var grp   = a.date === today ? 'Today' : a.date > today ? 'Upcoming' : 'Past';
+    var sep   = '';
+    if (grp !== lastGroup) {
+      var gc = grp === 'Today' ? 'var(--success)' : grp === 'Upcoming' ? 'var(--accent)' : 'var(--text3)';
+      sep = '<tr><td colspan="6" style="padding:8px 12px 4px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:' + gc + ';border-bottom:2px solid ' + gc + ';">' + grp + '</td></tr>';
+      lastGroup = grp;
+    }
+    return sep + '<tr><td>' + (a.date === today ? 'Today' : a.date) + '</td><td>' + a.from + '–' + a.to + '</td><td><b>' + a.patName + '</b></td><td>' + a.type + '</td><td>' + (p && p.bedNum && p.bedNum !== '—' ? 'Bed ' + p.bedNum : '—') + '</td><td><button class="btn btn-p sm" onclick="openFile(\'' + a.patId + '\',\'doc\',\'\')">File</button></td></tr>';
+  }).join('');
+}
+
+function renderDocPts(q) {
+  var filter = (q || '').toLowerCase();
+  var list   = patients.filter(function(p) { return p.dept === curUser.wing && p.status === 'Admitted' && (!filter || p.name.toLowerCase().includes(filter) || p.id.toLowerCase().includes(filter)); });
+  var tb     = document.getElementById('d-ptbody');
+  if (!list.length) { tb.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--text3);padding:24px;">No patients in your department.</td></tr>'; return; }
+  tb.innerHTML = list.map(function(p) {
+    return '<tr><td><code style="font-size:11px;color:var(--text3);">' + p.id + '</code></td><td><b>' + p.name + '</b></td><td>Dept ' + p.dept + '</td><td>' + (p.bedNum && p.bedNum !== '—' ? 'Bed ' + p.bedNum : '—') + '</td><td>' + p.admitted + '</td><td><button class="btn btn-p sm" onclick="openFile(\'' + p.id + '\',\'doc\',\'\')">Medical File</button></td></tr>';
+  }).join('');
+}
+
+
+// ══════════════════════════════════════
+//  NURSE
+// ══════════════════════════════════════
+
+function refreshNurDash() {
+  var mine = patients.filter(function(p) { return p.dept === curUser.wing && p.status === 'Admitted'; });
+  document.getElementById('n-n-pts').textContent = mine.length;
+  var recent = mine.slice(-5).reverse();
+  document.getElementById('n-dash-pts').innerHTML = recent.length
+    ? recent.map(function(p) {
+        return '<div class="row"><div class="row-i"><div class="row-t">' + p.name + ' <code style="font-size:11px;color:var(--text3);">' + p.id + '</code></div><div class="row-s">Bed ' + (p.bedNum || '—') + ' — Admitted ' + p.admitted + '</div></div></div>';
+      }).join('')
+    : '<div style="text-align:center;padding:20px;color:var(--text3);font-size:13px;">No patients in your department yet.</div>';
+}
+
+function renderNurPts(q) {
+  var filter = (q || '').toLowerCase();
+  var list   = patients.filter(function(p) { return p.dept === curUser.wing && p.status === 'Admitted' && (!filter || p.name.toLowerCase().includes(filter) || p.id.toLowerCase().includes(filter)); });
+  var tb     = document.getElementById('n-ptbody');
+  if (!list.length) { tb.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--text3);padding:24px;">No patients in your department.</td></tr>'; return; }
+  tb.innerHTML = list.map(function(p) {
+    return '<tr><td><code style="font-size:11px;color:var(--text3);">' + p.id + '</code></td><td><b>' + p.name + '</b></td><td>Dept ' + p.dept + '</td><td>' + (p.bedNum && p.bedNum !== '—' ? 'Bed ' + p.bedNum : '—') + '</td><td>' + p.admitted + '</td><td><button class="btn btn-p sm" onclick="openFile(\'' + p.id + '\',\'nur\',\'\')">Patient File</button></td></tr>';
+  }).join('');
+}
+
+
+// ══════════════════════════════════════
+//  ADMIN
+// ══════════════════════════════════════
+
+function renderAdminStats() {
+  document.getElementById('a-n-doc').textContent = staff.filter(function(s) { return s.role === 'doctor';    }).length;
+  document.getElementById('a-n-nur').textContent = staff.filter(function(s) { return s.role === 'nurse';     }).length;
+  document.getElementById('a-n-sec').textContent = staff.filter(function(s) { return s.role === 'secretary'; }).length;
+  document.getElementById('a-n-pat').textContent = patients.length;
+  document.getElementById('a-n-adm').textContent = patients.filter(function(p) { return p.status === 'Admitted'; }).length;
+
+  document.getElementById('a-wing-stats').innerHTML = Object.entries(DEPTS).map(function(entry) {
+    var k = entry[0], d = entry[1];
+    var occ = patients.filter(function(p) { return p.dept === k && p.status === 'Admitted'; }).length;
+    var pct = Math.round(occ / d.beds * 100);
+    var color = pct > 80 ? 'var(--danger)' : pct > 50 ? 'var(--warning)' : 'var(--accent)';
+    return '<div style="margin-bottom:16px;">'
+      + '<div style="display:flex;justify-content:space-between;margin-bottom:4px;font-size:13.5px;font-weight:600;"><span>Dept ' + k + ' — ' + d.dept + '</span><span style="color:var(--text3);">' + occ + '/' + d.beds + ' beds occupied</span></div>'
+      + '<div style="background:var(--surface2);border-radius:4px;height:8px;overflow:hidden;"><div style="width:' + pct + '%;height:100%;background:' + color + ';border-radius:4px;transition:width .4s;"></div></div>'
+      + '</div>';
+  }).join('');
+}
+
+var ROLE_BADGE = { doctor:'b-b', nurse:'b-g', secretary:'b-o' };
+var ROLE_LABEL = { doctor:'Doctor', nurse:'Nurse', secretary:'Medical Secretary' };
+
+function renderStaff(q) {
+  var filter = (q || '').toLowerCase();
+  var list   = staff.filter(function(s) { return !filter || s.name.toLowerCase().includes(filter) || s.user.toLowerCase().includes(filter); });
+  var tb     = document.getElementById('a-staff-body');
+  if (!list.length) { tb.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--text3);padding:28px;">No staff found.</td></tr>'; return; }
+  tb.innerHTML = list.map(function(s) {
+    var deptInfo = s.role === 'doctor' ? (s.specialty || '—') + ' — Dept ' + s.wing : s.role === 'nurse' ? 'Dept ' + s.wing + ' — ' + s.dept : s.dept;
+    return '<tr>'
+      + '<td><code style="font-size:11px;color:var(--text3);">' + (s.id || '—') + '</code></td>'
+      + '<td style="font-weight:600;">' + s.name + '</td>'
+      + '<td><code style="font-size:12px;color:var(--text3);">' + s.user + '</code></td>'
+      + '<td><span class="badge ' + (ROLE_BADGE[s.role] || 'b-gr') + '">' + (ROLE_LABEL[s.role] || s.role) + '</span></td>'
+      + '<td style="font-size:13px;">' + (s.phone || '—') + '</td>'
+      + '<td style="font-size:13px;">' + deptInfo + '</td>'
+      + '<td style="display:flex;gap:6px;"><button class="btn btn-o sm" onclick="openEditStaff(\'' + s.user + '\')">Edit</button><button class="btn btn-d sm" onclick="removeStaff(\'' + s.user + '\')">Delete</button></td>'
+      + '</tr>';
+  }).join('');
+}
+
+function removeStaff(u) {
+  var s = staff.find(function(x) { return x.user === u; });
+  if (!s) return;
+  staff = staff.filter(function(x) { return x.user !== u; });
+  renderStaff(''); renderAdminStats();
+  showToast('Account deleted.', 'ok');
+}
+
+function onRoleChange() {
+  var r = document.getElementById('ns-role').value;
+  document.getElementById('ns-wing-row').style.display = (r === 'doctor' || r === 'nurse') ? 'block' : 'none';
+  document.getElementById('ns-spec-row').style.display = (r === 'doctor') ? 'block' : 'none';
+}
+
+function addStaff(e) {
+  e.preventDefault();
+  var n    = document.getElementById('ns-name').value.trim();
+  var u    = document.getElementById('ns-user').value.trim().toLowerCase();
+  var p    = document.getElementById('ns-pass').value;
+  var r    = document.getElementById('ns-role').value;
+  var w    = document.getElementById('ns-wing').value;
+  var ph   = document.getElementById('ns-phone').value.trim();
+  var spec = document.getElementById('ns-spec').value;
+
+  if (!n || !u || !p || !r) { showToast('Please fill in all required fields.', 'err'); return; }
+  if (p.length < 6)         { showToast('Password must be at least 6 characters.', 'err'); return; }
+  if (staff.find(function(x) { return x.user === u; })) { showToast('Username already exists.', 'err'); return; }
+  if ((r === 'doctor' || r === 'nurse') && !w)  { showToast('Please assign a department.', 'err'); return; }
+  if (r === 'doctor' && !spec)                   { showToast('Please select a specialty.', 'err'); return; }
+
+  var dept = (r === 'doctor' || r === 'nurse') ? (DEPTS[w] ? DEPTS[w].dept : '') : 'Reception';
+  var sid  = 'STF-' + String(stfCtr++).padStart(3, '0');
+  staff.push({ id:sid, name:n, user:u, role:r, dept:dept, specialty:spec, wing:w||'-', pass:p, phone:ph });
+
+  closeMo('add-staff-mo');
+  ['ns-name','ns-user','ns-pass','ns-phone'].forEach(function(id) { document.getElementById(id).value = ''; });
+  document.getElementById('ns-role').value = '';
+  document.getElementById('ns-spec').value = '';
+  document.getElementById('ns-wing-row').style.display = 'none';
+  document.getElementById('ns-spec-row').style.display = 'none';
+
+  renderStaff(''); renderAdminStats();
+  showToast('Account created for ' + n + '.', 'ok');
+}
+
+function openEditStaff(u) {
+  var s = staff.find(function(x) { return x.user === u; });
+  if (!s) return;
+  document.getElementById('es-user').value  = u;
+  document.getElementById('es-phone').value = s.phone || '';
+  document.getElementById('es-pass').value  = '';
+  document.getElementById('es-pass2').value = '';
+  openMo('edit-staff-mo');
+}
+
+function saveEditStaff(e) {
+  e.preventDefault();
+  var u  = document.getElementById('es-user').value;
+  var s  = staff.find(function(x) { return x.user === u; });
+  if (!s) return;
+  s.phone = document.getElementById('es-phone').value.trim();
+  var np  = document.getElementById('es-pass').value;
+  var np2 = document.getElementById('es-pass2').value;
+  if (np || np2) {
+    if (np !== np2)  { showToast('Passwords do not match.', 'err'); return; }
+    if (np.length < 6) { showToast('Password must be at least 6 characters.', 'err'); return; }
+    s.pass = np;
+  }
+  closeMo('edit-staff-mo');
+  renderStaff('');
+  showToast('Account updated for ' + s.name + '.', 'ok');
+}
+
+
+// ══════════════════════════════════════
+//  SHARED UTILITIES
+// ══════════════════════════════════════
+
+function chgPwd(e, a, b, c) {
+  e.preventDefault();
+  var cv = document.getElementById(a).value;
+  var nv = document.getElementById(b).value;
+  var cf = document.getElementById(c).value;
+  if (!cv || !nv || !cf)  { showToast('Please fill all fields.', 'err'); return; }
+  if (nv !== cf)           { showToast('Passwords do not match.', 'err'); return; }
+  if (nv.length < 6)       { showToast('Password must be at least 6 characters.', 'err'); return; }
+  showToast('Password updated successfully.', 'ok');
+  [a, b, c].forEach(function(id) { document.getElementById(id).value = ''; });
+}
+
+// Convert DD/MM/YYYY to YYYY-MM-DD
+function dateToISO(raw) {
+  var pts = raw.split('/');
+  return pts[2] + '-' + pts[1] + '-' + pts[0];
+}
+
+// Format date input as user types (auto-inserts slashes)
+function fmtDate(el) {
+  var v = el.value.replace(/\D/g, '');
+  if (v.length > 2) v = v.slice(0, 2) + '/' + v.slice(2);
+  if (v.length > 5) v = v.slice(0, 5) + '/' + v.slice(5);
+  el.value = v.slice(0, 10);
+}
+
+// Current timestamp as human-readable string
+function now() {
+  return new Date().toLocaleString('en-GB', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' });
+}
+
+// Modal open/close
+function openMo(id)   { document.getElementById(id).classList.add('open'); }
+function closeMo(id)  { document.getElementById(id).classList.remove('open'); }
+function closeMoBg(e) { if (e.target === e.currentTarget) e.currentTarget.classList.remove('open'); }
+
+// Also update sched when date changes
+document.addEventListener('change', function(e) {
+  if (e.target && e.target.id === 'appt-date') updSched();
+});
+
+// Toast notification
+function showToast(msg, type, duration) {
+  var c = document.getElementById('toast-container');
+  var t = document.createElement('div');
+  t.className  = 'toast t-' + (type || 'ok');
+  t.textContent= msg;
+  c.appendChild(t);
+  requestAnimationFrame(function() {
+    requestAnimationFrame(function() { t.classList.add('show'); });
+  });
+  setTimeout(function() {
+    t.classList.remove('show');
+    setTimeout(function() { t.remove(); }, 300);
+  }, duration || 3000);
+}
+</script>
+</body>
+</html>
