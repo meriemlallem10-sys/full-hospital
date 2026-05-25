@@ -61,6 +61,13 @@ function now() {
   return new Date().toLocaleString('en-GB', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' });
 }
 
+// Format time string to HH:MM (remove seconds)
+function formatTime(timeStr) {
+  if (!timeStr) return '—';
+  // Handle both HH:MM:SS and HH:MM formats
+  return timeStr.split(':').slice(0, 2).join(':');
+}
+
 // Modal open/close
 function openMo(id)   { document.getElementById(id)?.classList.add('open'); }
 function closeMo(id)  { document.getElementById(id)?.classList.remove('open'); }

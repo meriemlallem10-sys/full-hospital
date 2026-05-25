@@ -125,7 +125,7 @@ async function openNursePatientFile(id) {
   admHtml += '<div class="fs"><div class="fst">Clinical Evaluations</div>';
   if (allEvals.length) {
     allEvals.sort(function(a, b) { var ka=(a.date||a.datetime||'')+(a.time||''); var kb=(b.date||b.datetime||'')+(b.time||''); return kb.localeCompare(ka); }).forEach(function(ev) {
-      var dt = (ev.date ? ev.date + ' ' : '') + (ev.time || ev.datetime || '');
+      var dt = (ev.date ? ev.date + ' ' : '') + formatTime(ev.time || ev.datetime || '');
       admHtml += '<div style="border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:8px;">'  
         + '<div style="font-size:10px;color:var(--text3);margin-bottom:6px;font-weight:600;">' + (dt || '—') + ' — by ' + (ev.by || '—') + ' · <span class="badge b-b" style="font-size:10px;">' + (ev.state || 'pending') + '</span></div>'
         + '<div style="font-size:13.5px;white-space:pre-wrap;">' + (ev.notes || ev.obs || '') + '</div></div>';
@@ -147,7 +147,7 @@ async function openNursePatientFile(id) {
       var t = item.tx;
       var admIdx = item.admIdx;
       var txIdx = item.txIdx;
-      var prescribedLabel = t.prescribedAt ? new Date(t.prescribedAt).toLocaleString('en-GB', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' }) : (t.date || '—');
+      var prescribedLabel = t.prescribedAt ? new Date(t.prescribedAt).toLocaleString('en-GB', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit', second:undefined }) : (t.date || '—');
       admHtml += '<div style="border:1.5px solid var(--border);border-radius:10px;padding:14px;margin-bottom:12px;background:var(--surface);">'  
         + '<div style="margin-bottom:8px;"><span style="font-weight:700;font-size:14px;">' + (t.med || '') + ' ' + (t.dose||'') + '</span>'
         + ' <span style="font-size:12px;color:var(--text3);margin-left:6px;">' + (t.freqLabel||t.freq||'') + ' — ' + (t.durDays||t.dur||'') + ' day(s)</span></div>'
@@ -178,6 +178,7 @@ async function openNursePatientFile(id) {
   if (allVitals.length) {
     allVitals.sort(function(a, b) { return parseNurseDateTime(b) - parseNurseDateTime(a); }).forEach(function(v) {
       var dateTimeStr = formatNurseDateTime(v);
+      dateTimeStr = (v.date ? v.date + ' ' : '') + formatTime(v.time || v.datetime || '—');
       admHtml += '<div style="border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:8px;">'  
         + '<div style="font-size:10px;color:var(--text3);margin-bottom:6px;font-weight:600;">' + (v.nurse || '—') + ' — ' + dateTimeStr + '</div>'
         + '<div style="font-size:12px;">HR: ' + (v.hr || '—') + ' bpm | BP: ' + (v.bp || '—') + ' | Temp: ' + (v.temp || '—') + '°C | SpO2: ' + (v.spo2 || '—') + '%</div></div>';

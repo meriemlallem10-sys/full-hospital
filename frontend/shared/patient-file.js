@@ -68,7 +68,7 @@ function loadPatientFile() {
       + row('Bed Number', 'Bed ' + adm.bedNum)
       + (adm.evals && adm.evals.length ? '<div style="margin-top:12px;font-weight:600;border-bottom:1px solid var(--border);padding-bottom:8px;">Evaluations</div>' : '')
       + (adm.evals && adm.evals.length ? adm.evals.slice().sort(function(a,b){ var ka=(a.date||a.datetime||'')+(a.time||''); var kb=(b.date||b.datetime||'')+(b.time||''); return kb.localeCompare(ka); }).map(function(e) {
-          var dt = (e.date ? e.date + ' ' : '') + (e.time || e.datetime || '');
+          var dt = (e.date ? e.date + ' ' : '') + formatTime(e.time || e.datetime || '');
           return '<div class="row" style="margin:8px 0;"><div class="row-i"><div class="row-t">' + (e.by || '') + '</div>'
             + '<div class="row-s">' + (e.state || '') + ' — ' + (e.notes || e.obs || '').slice(0, 150) + ( (e.notes||e.obs) && (e.notes||e.obs).length > 150 ? '...' : '') + '</div></div>'
             + '<div style="font-size:11px;color:var(--text3);">' + dt + '</div></div>';

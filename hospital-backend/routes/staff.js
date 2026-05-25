@@ -142,12 +142,12 @@ router.get('/stats', async function(req, res) {
 
     // Count admitted patients
     const [[{ total_admitted }]] = await db.query(
-      "SELECT COUNT(*) AS total_admitted FROM Patient WHERE status = 'admitted'"
+      "SELECT COUNT(*) AS total_admitted FROM Patient WHERE LOWER(status) = 'admitted'"
     );
 
     // Count discharged patients
     const [[{ total_discharged }]] = await db.query(
-      "SELECT COUNT(*) AS total_discharged FROM Patient WHERE status = 'discharged'"
+      "SELECT COUNT(*) AS total_discharged FROM Patient WHERE LOWER(status) = 'discharged'"
     );
 
     // Count total beds and occupied beds per department

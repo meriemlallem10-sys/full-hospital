@@ -56,27 +56,56 @@
   <div id="toast-container"></div>
 
   <script src="../assets/js/common.js"></script>
+  <script src="../assets/js/api.js"></script>
   <script src="../assets/js/login.js"></script>
   <script src="../assets/js/secretary.js"></script>
   <script>
     if (!restoreSession()) throw new Error('Not authenticated');
     if (curUser.role !== 'secretary') window.location.href = '../index.html';
 
-    function renderBeds() {
-      Object.keys(DEPTS).forEach(dk => {
-        const div = document.getElementById('bd-' + dk.toLowerCase());
-        if (!div) return;
-        const occupiedNums = patients.filter(p => p.dept === dk && p.status === 'Admitted').map(p => p.bedNum);
-        let html = '<div class="rg">';
-        for (let i = 1; i <= DEPTS[dk].beds; i++) {
-          const isFull = occupiedNums.includes(i);
-          html += `<div class="rcd ${isFull ? 'full' : 'free'}">
-            <div class="rnum">Bed ${i}</div>
-            <div style="font-size:12px;font-weight:600;color:var(--text2);">${isFull ? 'Occupied' : 'Available'}</div>
-          </div>`;
-        }
-        div.innerHTML = html + '</div>';
-      });
+    async function renderBeds() {
+      try {
+        // Fetch real bed occupancy data from backend using API helper
+        const data = await getBeds();
+        console.log('Beds API response:', data);
+        const bedsData = data.beds || [];
+        console.log('Beds data:', bedsData);
+        
+        // Build occupancy map by department using extracted bed number
+        const occupancyByDept = {};
+        Object.keys(DEPTS).forEach(dk => { occupancyByDept[dk] = {}; });
+        
+        bedsData.forEach(bed => {
+          const deptWing = deptIdToWing(bed.id_department);
+          // Extract bed number: "Room 101" -> 1, "Room 205" -> 5
+          const roomNum = String(bed.roomNUM);
+          const bedNum = parseInt(roomNum.replace(/\D/g, '')) % 100; // Get numeric part, use modulo 100
+          const isOccupied = bed.is_occupied === 1 || bed.is_occupied === true || bed.id_patient;
+          console.log(`${roomNum} in Dept ${bed.id_department} (${deptWing}): bed index=${bedNum}, occupied=${isOccupied}`);
+          occupancyByDept[deptWing][bedNum] = isOccupied;
+        });
+        
+        console.log('Occupancy map:', occupancyByDept);
+        
+        // Render each department
+        Object.keys(DEPTS).forEach(dk => {
+          const div = document.getElementById('bd-' + dk.toLowerCase());
+          if (!div) return;
+          let html = '<div class="rg">';
+          for (let i = 1; i <= DEPTS[dk].beds; i++) {
+            // Look up occupancy by bed index
+            const isFull = occupancyByDept[dk][i] === true;
+            html += `<div class="rcd ${isFull ? 'full' : 'free'}">
+              <div class="rnum">Bed ${i}</div>
+              <div style="font-size:12px;font-weight:600;color:var(--text2);">${isFull ? 'Occupied' : 'Available'}</div>
+            </div>`;
+          }
+          div.innerHTML = html + '</div>';
+        });
+      } catch (err) {
+        console.error('Failed to load beds:', err);
+        showToast('Failed to load bed data: ' + err.message, 'err');
+      }
     }
 
     function switchDept(el, id) {
@@ -90,7 +119,13 @@
       if (target) target.style.display = 'block';
     }
 
-    renderBeds();
+    // Load backend data and render beds
+    loadBackendData().then(() => {
+      renderBeds();
+    }).catch(err => {
+      console.error('Failed to load backend data:', err);
+      showToast('Error loading bed data.', 'err');
+    });
   </script>
 </body>
 </html>

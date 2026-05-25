@@ -443,10 +443,9 @@ async function scheduleAppt(e) {
   const docUser = document.getElementById('appt-doc').value;
   const date = document.getElementById('appt-date').value;
   const from = document.getElementById('appt-from').value;
-  const to = document.getElementById('appt-to').value;
   const type = document.getElementById('appt-type').value;
 
-  if (!patId || !docUser || !date || !from || !to || !type) {
+  if (!patId || !docUser || !date || !from || !type) {
     showToast('Please fill all fields.', 'err');
     return;
   }
@@ -459,12 +458,11 @@ async function scheduleAppt(e) {
 
   // Check for conflicts locally first
   const conflict = appointments.find(a =>
-    a.docUser === docUser && a.date === date &&
-    ((from >= a.from && from < a.to) || (to > a.from && to <= a.to) || (from <= a.from && to >= a.to))
+    a.docUser === docUser && a.date === date && a.from === from
   );
 
   if (conflict) {
-    showToast('Time conflict with another appointment.', 'err');
+    showToast('Doctor already has an appointment at this time.', 'err');
     return;
   }
 
@@ -542,7 +540,7 @@ function updSched() {
   panel.innerHTML = list.length
     ? list.map(a => `
         <div class="row">
-          <div class="row-d">${a.from}–${a.to}</div>
+          <div class="row-d">${formatTime(a.from)}</div>
           <div class="row-i">
             <div class="row-t">${a.patName}</div>
             <div class="row-s">Dr. ${a.docName} — ${a.type}</div>

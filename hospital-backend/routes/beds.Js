@@ -36,7 +36,7 @@ router.get('/', async function(req, res) {
       FROM Bed b
       LEFT JOIN Department d ON b.id_department   = d.id_department
       LEFT JOIN Patient    p ON p.id_bed           = b.id_bed
-                             AND p.status          = 'admitted'
+                             AND LOWER(p.status)   = 'admitted'
       ORDER BY b.id_department, b.id_bed
     `);
     // the LEFT JOIN on Patient makes sure we only show

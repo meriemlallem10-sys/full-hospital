@@ -54,10 +54,7 @@
                 </div>
                 <div class="fgr"><label>Assign Doctor *</label><select id="appt-doc"><option value="">— Select Doctor —</option></select></div>
                 <div class="fgr"><label>Date *</label><input type="date" id="appt-date"/></div>
-                <div class="fg" style="gap:12px;">
-                  <div class="fgr"><label>From (hour)</label><select id="appt-from"></select></div>
-                  <div class="fgr"><label>To (hour)</label><select id="appt-to"></select></div>
-                </div>
+                <div class="fgr"><label>Start Time (hour) *</label><select id="appt-from"></select></div>
                 <div class="fgr"><label>Type</label><select id="appt-type"><option>Consultation</option><option>Follow-up</option><option>Intervention / Surgery</option></select></div>
                 <button type="submit" class="btn btn-p" onclick="scheduleAppt(event)">Schedule Appointment</button>
               </div>
@@ -100,7 +97,6 @@
         hourOptions.push(`<option value="${v}">${v}</option>`);
       }
       document.getElementById('appt-from').innerHTML = hourOptions.join('');
-      document.getElementById('appt-to').innerHTML = hourOptions.join('');
       renderApptPatList('');
 
       document.getElementById('appt-date').addEventListener('change', updSched);
