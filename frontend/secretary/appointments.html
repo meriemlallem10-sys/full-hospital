@@ -52,7 +52,7 @@
                     <div id="appt-pat-list" style="border:1.5px solid var(--border);border-radius:8px;max-height:200px;overflow-y:auto;background:var(--surface);"></div>
                   </div>
                 </div>
-                <div class="fgr"><label>Assign Doctor *</label><select id="appt-doc"><option value="">— Select Doctor —</option></select></div>
+                <div class="fgr"><label>Assign Doctor *</label><select id="appt-doc" onchange="updSched()"><option value="">— Select Doctor —</option></select></div>
                 <div class="fgr"><label>Date *</label><input type="date" id="appt-date"/></div>
                 <div class="fgr"><label>Start Time (hour) *</label><select id="appt-from"></select></div>
                 <div class="fgr"><label>Type</label><select id="appt-type"><option>Consultation</option><option>Follow-up</option><option>Intervention / Surgery</option></select></div>
@@ -88,7 +88,7 @@
       const docSel = document.getElementById('appt-doc');
       docSel.innerHTML = '<option value="">— Select Doctor —</option>' +
         staff.filter(s => s.role === 'doctor').map(s =>
-          `<option value="${s.user}">${s.name} — Dept ${s.wing}</option>`
+          `<option value="${s.backendId}">${s.name} — Dept ${s.wing}</option>`
         ).join('');
 
       const hourOptions = [];

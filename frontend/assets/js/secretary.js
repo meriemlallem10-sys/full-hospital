@@ -440,25 +440,25 @@ function renderSecAppts(q = '') {
 async function scheduleAppt(e) {
   if (e && e.preventDefault) e.preventDefault();
   const patId = document.getElementById('appt-pat').value;
-  const docUser = document.getElementById('appt-doc').value;
+  const docId = parseInt(document.getElementById('appt-doc').value);
   const date = document.getElementById('appt-date').value;
   const from = document.getElementById('appt-from').value;
   const type = document.getElementById('appt-type').value;
 
-  if (!patId || !docUser || !date || !from || !type) {
+  if (!patId || !docId || !date || !from || !type) {
     showToast('Please fill all fields.', 'err');
     return;
   }
 
   const patient = patients.find(p => p.id === patId);
-  const doctor = staff.find(s => s.user === docUser);
+  const doctor = staff.find(s => s.backendId === docId);
 
   if (!patient) { showToast('Patient not found.', 'err'); return; }
   if (!doctor) { showToast('Doctor not found.', 'err'); return; }
 
   // Check for conflicts locally first
   const conflict = appointments.find(a =>
-    a.docUser === docUser && a.date === date && a.from === from
+    a.docId === docId && a.date === date && a.from === from
   );
 
   if (conflict) {
@@ -528,12 +528,24 @@ function clearPatSel() {
 
 function updSched() {
   const date = document.getElementById('appt-date').value;
+  const docId = parseInt(document.getElementById('appt-doc').value);
   const panel = document.getElementById('sched-panel');
   const tit = document.getElementById('sched-title');
   const bdg = document.getElementById('sched-badge');
-  if (!date) return;
+  
+  if (!date) {
+    panel.innerHTML = '<div style="text-align:center;padding:24px;color:var(--text3);font-size:13px;">Select a date to view appointments.</div>';
+    return;
+  }
+  
+  if (!docId || isNaN(docId)) {
+    panel.innerHTML = '<div style="text-align:center;padding:24px;color:var(--text3);font-size:13px;">Select a doctor to view appointments.</div>';
+    return;
+  }
 
-  const list = appointments.filter(a => a.date === date);
+  // Filter appointments by date AND selected doctor ID
+  const list = appointments.filter(a => a.date === date && a.docId === docId);
+  
   tit.textContent = 'Appointments — ' + new Date(date).toLocaleDateString('en-GB', { weekday:'short', day:'numeric', month:'short', year:'numeric' });
   bdg.className = list.length ? 'badge b-b' : '';
   bdg.textContent = list.length ? list.length + ' appt' + (list.length > 1 ? 's' : '') : '';
@@ -543,7 +555,7 @@ function updSched() {
           <div class="row-d">${formatTime(a.from)}</div>
           <div class="row-i">
             <div class="row-t">${a.patName}</div>
-            <div class="row-s">Dr. ${a.docName} — ${a.type}</div>
+            <div class="row-s">${a.type}</div>
           </div>
         </div>
       `).join('')

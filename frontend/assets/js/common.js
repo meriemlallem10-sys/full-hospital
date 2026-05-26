@@ -246,14 +246,22 @@ function normalizeBackendStaff(raw) {
 function normalizeBackendAppointment(raw) {
   const id = raw.id_appointment ? 'APPT-' + String(raw.id_appointment).padStart(3, '0') : raw.id || '';
   const patId = raw.id_patient ? 'PT-' + String(raw.id_patient).padStart(3, '0') : raw.patId || '';
-  const docId = raw.id_doctor || raw.docId || null;
+  const docId = raw.id_doctor || null;
   const docUser = raw.doctor_user || raw.docUser || '';
   const docName = raw.doctor_name || raw.docName || '';
   const patName = (raw.patient_first || raw.patient_last)
     ? `${raw.patient_first || ''} ${raw.patient_last || ''}`.trim()
     : raw.patName || 'Unknown';
   const dept = raw.dept_name ? deptNameToWing(raw.dept_name) : (raw.dept || '-');
-  const date = raw.appt_date || raw.date || '';
+  
+  // Extract just the date part (YYYY-MM-DD) from either ISO datetime or date string
+  let dateStr = raw.appt_date || raw.date || '';
+  if (dateStr && dateStr.includes('T')) {
+    // ISO datetime format: extract just the date part before 'T'
+    dateStr = dateStr.split('T')[0];
+  }
+  const date = dateStr;
+  
   const time = raw.appt_time || raw.from || '';
 
   return {
